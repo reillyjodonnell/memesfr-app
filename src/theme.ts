@@ -8,4 +8,9 @@ export const colors = {
   accentBg: '#cb48b7' as Color,
   accent: '#cb48b7' as Color,
   navActive: '#fbfbfba6' as Color,
+  iconWidth: 30,
+  iconHeight: 30,
+  logoHeight: 40,
+  logoWidth: 40,
+  fontBold: '700',
 };

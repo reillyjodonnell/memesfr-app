@@ -11,7 +11,6 @@ import Message from './assets/message.svg';
 import User from './assets/user.svg';
 import HomeScreen from './home/home';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Branding} from './branding';
 
 function NotificationScreen() {
   return (
@@ -41,9 +40,12 @@ const {bg} = colors;
 export default function Memesfr() {
   return (
     <View style={{backgroundColor: colors.bg}}>
-      <SafeAreaView style={{height: '100%'}}>
+      <SafeAreaView
+        style={{
+          height: '100%',
+          backgroundColor: colors.bg,
+        }}>
         <NavigationContainer>
-          <Branding />
           {isSignedIn ? (
             <Tab.Navigator
               screenOptions={{
@@ -75,7 +77,7 @@ export default function Memesfr() {
                   // display: 'flex',
                   // borderRadius: 15,
                   // alignItems: 'center',
-                  height: 80,
+                  height: 60,
                 },
                 tabBarItemStyle: {},
               }}>
@@ -85,8 +87,8 @@ export default function Memesfr() {
                     <>
                       <HomeIcon
                         style={{
-                          width: 30,
-                          height: 30,
+                          width: colors.iconWidth,
+                          height: colors.iconHeight,
                           position: 'relative',
                         }}
                         stroke={
@@ -96,7 +98,9 @@ export default function Memesfr() {
                       />
                       <Text
                         style={{
-                          color: 'white',
+                          color: focused
+                            ? colors.textPrimary
+                            : colors.textSecondary,
                           fontWeight: '700',
                           fontSize: 10,
                         }}>
@@ -113,7 +117,11 @@ export default function Memesfr() {
                   tabBarIcon: ({focused}) => (
                     <>
                       <Search
-                        style={{width: 30, height: 30, marginRight: 10}}
+                        style={{
+                          width: colors.iconWidth,
+                          height: colors.iconHeight,
+                          marginRight: 10,
+                        }}
                         stroke={
                           focused ? colors.textPrimary : colors.textSecondary
                         }
@@ -121,7 +129,9 @@ export default function Memesfr() {
                       />
                       <Text
                         style={{
-                          color: 'white',
+                          color: focused
+                            ? colors.textPrimary
+                            : colors.textSecondary,
                           fontWeight: '700',
                           fontSize: 10,
                         }}>
@@ -185,7 +195,11 @@ export default function Memesfr() {
                   tabBarIcon: ({size, focused}) => (
                     <>
                       <Message
-                        style={{width: 30, height: 30, marginLeft: 10}}
+                        style={{
+                          width: colors.iconWidth,
+                          height: colors.iconHeight,
+                          marginLeft: 10,
+                        }}
                         stroke={
                           focused ? colors.textPrimary : colors.textSecondary
                         }
@@ -193,7 +207,9 @@ export default function Memesfr() {
                       />
                       <Text
                         style={{
-                          color: 'white',
+                          color: focused
+                            ? colors.textPrimary
+                            : colors.textSecondary,
                           fontWeight: '700',
                           fontSize: 10,
                         }}>
@@ -211,8 +227,8 @@ export default function Memesfr() {
                     <>
                       <User
                         style={{
-                          width: 30,
-                          height: 30,
+                          width: colors.iconWidth,
+                          height: colors.iconHeight,
                         }}
                         stroke={
                           focused ? colors.textPrimary : colors.textSecondary
@@ -224,7 +240,9 @@ export default function Memesfr() {
                       />
                       <Text
                         style={{
-                          color: 'white',
+                          color: focused
+                            ? colors.textPrimary
+                            : colors.textSecondary,
                           fontWeight: '700',
                           fontSize: 10,
                         }}>
