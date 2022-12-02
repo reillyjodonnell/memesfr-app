@@ -13,4 +13,7 @@ export const colors = {
   logoHeight: 40,
   logoWidth: 40,
   fontBold: '700',
+  fontSemiBold: '600',
+  strokeBold: '2.5',
+  strokeNormal: '1.5',
 };

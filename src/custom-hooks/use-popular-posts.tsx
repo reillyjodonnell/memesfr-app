@@ -13,9 +13,9 @@ export default function usePopularPosts() {
   const [popularPosts, setPopularPosts] = useState<Post[]>([
     {
       id: 0,
-      format: 'video',
+      format: 'photo',
       title: 'sampleMeme',
-      url: 'https://v16m-webapp.tiktokcdn-us.com/1834370033477b1f8a4c871740231647/63888561/video/tos/useast5/tos-useast5-pve-0068-tx/517720afd32c4942965dd2da7a325c4b/?a=1988&ch=0&cr=0&dr=0&lr=tiktok_m&cd=0%7C0%7C1%7C0&cv=1&br=2894&bt=1447&cs=0&ds=3&ft=ebtHKH-qMyq8Zcm39he2NaO-fl7Gb&mime_type=video_mp4&qs=0&rc=NTRmaDs8OGk3aTNkZDw6aUBpM3M5OTo6ZnU1aDMzZzczNEAyLmAzMDNgXy0xMWNgLjQwYSNkbzFtcjRfMTBgLS1kMS9zcw%3D%3D&l=202212010442148616E127249C9001149B',
+      url: 'https://images.pexels.com/photos/12309508/pexels-photo-12309508.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       likes: 12000,
       creator: 'user123',
     },
@@ -23,7 +23,7 @@ export default function usePopularPosts() {
       id: 1,
       format: 'video',
       title: 'oh shit',
-      url: 'https://v16m-webapp.tiktokcdn-us.com/720245ab403de0a098243f2ad737aadd/63888512/video/tos/useast5/tos-useast5-pve-0068-tx/2f1eda1538c44e6abeb65fb52afe9c6d/?a=1988&ch=0&cr=0&dr=0&lr=tiktok_m&cd=0%7C0%7C1%7C0&cv=1&br=3766&bt=1883&cs=0&ds=3&ft=ebtHKH-qMyq8Zcm39he2NaO-fl7Gb&mime_type=video_mp4&qs=0&rc=PGQ4Njo3Ozk3NDdlZTk8NUBpM3V1OWQ6ZnVzaDMzZzczNEBiMjQtXjQwNWMxNi4xLy0yYSNzMW02cjRnZS1gLS1kMS9zcw%3D%3D&l=202212010442148616E127249C9001149B',
+      url: 'https://www.pexels.com/video/a-cupcake-on-a-plate-8015075/',
       likes: 100,
       creator: 'User',
     },

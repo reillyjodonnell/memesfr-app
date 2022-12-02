@@ -1,26 +1,25 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Castle from './assets/castle.svg';
-import Notifications from './assets/notifications.svg';
+import Search from './assets/search.svg';
 import Flame from './assets/flame.svg';
 import Clock from './assets/clock.svg';
 import {colors} from './theme';
-import Home from './home/home';
 
-type BrandingProps = {
-  active: number;
-  setActive: Function;
+const iconMap = {
+  Popular: Flame,
+  Recent: Clock,
 };
 
-export const Branding = ({active, setActive}: BrandingProps) => {
+export const Branding = props => {
+  const routes = props?.state?.routes;
   return (
     <View style={styles.logoContainer}>
-      <Castle
-        height={colors.logoHeight}
-        width={colors.logoWidth}
+      <Pressable
         style={{marginRight: 'auto'}}
-      />
-
+        onPress={() => props?.navigation.navigate('Home')}>
+        <Castle height={colors.logoHeight} width={colors.logoWidth} />
+      </Pressable>
       <View
         style={{
           display: 'flex',
@@ -29,93 +28,130 @@ export const Branding = ({active, setActive}: BrandingProps) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Pressable
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderBottomWidth: 2,
+        {routes
+          ? routes.map((route, index) => {
+              const {options} = props.descriptors[route.key];
+              console.log(props.navigation);
+              const label =
+                options.tabBarLabel !== undefined
+                  ? options.tabBarLabel
+                  : options.title !== undefined
+                  ? options.title
+                  : route.name;
 
-            borderBottomColor:
-              active === 1 ? colors.textPrimary : 'transparent',
-          }}
-          onPress={() => setActive(1)}>
-          <Text
-            style={{
-              color: active === 1 ? colors.textPrimary : colors.textSecondary,
-              fontWeight: colors.fontBold,
-            }}>
-            Trending
-          </Text>
-          <Flame
-            stroke={active === 1 ? colors.textPrimary : colors.textSecondary}
-            height={colors.iconHeight}
-            width={colors.iconWidth}
-          />
-        </Pressable>
+              const isFocused = props.state.index === index;
 
-        <Text
-          style={{
-            color: '#ffffff30',
-            fontSize: 40,
-            fontWeight: '600',
-            lineHeight: 40,
-            paddingHorizontal: 6,
-          }}>
-          |
-        </Text>
-        <Pressable
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderBottomWidth: 2,
+              const onPress = () => {
+                const event = props.navigation?.emit({
+                  type: 'tabPress',
+                  target: route.key,
+                });
 
-            borderBottomColor:
-              active === 2 ? colors.textPrimary : 'transparent',
-          }}
-          onPress={() => setActive(2)}>
-          <Text
-            style={{
-              color: active === 2 ? colors.textPrimary : colors.textSecondary,
-              paddingRight: 4,
-              fontWeight: colors.fontBold,
-            }}>
-            Recent
-          </Text>
-          <Clock
-            stroke={active === 2 ? colors.textPrimary : colors.textSecondary}
-            height={colors.iconHeight - 7}
-            width={colors.iconWidth - 7}
-          />
-        </Pressable>
+                if (!isFocused && !event.defaultPrevented) {
+                  props.navigation?.navigate(route.name);
+                }
+              };
+
+              const onLongPress = () => {
+                props.navigation?.emit({
+                  type: 'tabLongPress',
+                  target: route.key,
+                });
+              };
+
+              const Icon = iconMap[label];
+
+              return (
+                <BrandingIcon
+                  onLongPress={onLongPress}
+                  onPress={onPress}
+                  isFocused={isFocused}
+                  icon={
+                    <Icon
+                      stroke={
+                        isFocused ? colors.textPrimary : colors.textSecondary
+                      }
+                      height={colors.iconHeight}
+                      width={colors.iconWidth}
+                    />
+                  }
+                  text={label}
+                />
+                // <TouchableOpacity
+                //   accessibilityRole="button"
+                //   accessibilityState={isFocused ? {selected: true} : {}}
+                //   accessibilityLabel={options.tabBarAccessibilityLabel}
+                //   testID={options.tabBarTestID}
+                //   onPress={onPress}
+                //   onLongPress={onLongPress}
+                //   style={{flex: 1}}>
+                //   <Text style={{color: isFocused ? '#673ab7' : '#222'}}>
+                //     {label}
+                //   </Text>
+                // </TouchableOpacity>
+              );
+            })
+          : null}
+        {props.children}
       </View>
-
-      <Notifications
-        stroke={'white'}
-        height={colors.iconHeight}
-        width={colors.iconWidth}
+      <Pressable
         style={{marginLeft: 'auto'}}
-      />
+        onPress={() => props?.navigation.navigate('Notifications')}>
+        <Search
+          stroke={'white'}
+          height={colors.iconHeight}
+          width={colors.iconWidth}
+        />
+      </Pressable>
     </View>
   );
 };
+
+function BrandingIcon({
+  icon,
+  text,
+  onPress,
+  onLongPress,
+  isFocused = false,
+}: any) {
+  return (
+    <Pressable
+      onPress={onPress}
+      onLongPress={onLongPress}
+      style={{
+        marginHorizontal: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomWidth: 2,
+        borderBottomColor: isFocused ? colors.textPrimary : 'transparent',
+      }}
+      // onPress={() => setActive(1)}>
+    >
+      <Text
+        style={{color: isFocused ? colors.textPrimary : colors.textSecondary}}>
+        {text}
+      </Text>
+
+      {icon}
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    paddingLeft: 10,
-    // backgroundColor: 'rgba( 255, 255, 255, 0.2 )',
-    // borderBottomColor: 'rgb(255,255,255,0.18)',
-    // borderBottomWidthWidth: 1,
     position: 'absolute',
     top: 0,
     height: 40,
     width: '100%',
     zIndex: 20,
     paddingHorizontal: 10,
+  },
+  icons: {
+    paddingHorizontal: 20,
   },
 });
