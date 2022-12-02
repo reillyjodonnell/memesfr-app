@@ -4,8 +4,10 @@ import Recent from './recent';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Branding} from '../branding';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {View, Text} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import {colors} from '../theme';
+import Topbar from '../common/topbar';
+import LeftArrow from '../assets/left-arrow.svg';
 const Stack = createNativeStackNavigator();
 
 const Tab = createMaterialTopTabNavigator();
@@ -43,9 +45,26 @@ function Notifications(props) {
         flex: 1,
         backgroundColor: colors.bg,
       }}>
-      <Branding {...props}>
-        <Text style={{color: colors.textPrimary}}>Notifications</Text>
-      </Branding>
+      <Topbar>
+        <Pressable
+          onPress={() => props?.navigation?.pop()}
+          style={{marginRight: 'auto'}}>
+          <LeftArrow
+            width={colors.iconWidth + 10}
+            height={colors.iconHeight + 10}
+            stroke={'white'}
+          />
+        </Pressable>
+        <Text
+          style={{
+            color: colors.textPrimary,
+            fontWeight: colors.fontBold,
+            marginRight: 'auto',
+            fontSize: colors.fontLg,
+          }}>
+          Search
+        </Text>
+      </Topbar>
     </View>
   );
 }

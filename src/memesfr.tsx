@@ -10,14 +10,7 @@ import Message from './assets/message.svg';
 import User from './assets/user.svg';
 import HomeScreen from './home/home';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
-function NotificationScreen() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Notification Screen</Text>
-    </View>
-  );
-}
+import NotificationScreen from './notifications/notifications';
 
 const StackHeader = () => {
   return (
@@ -101,7 +94,7 @@ export default function Memesfr() {
                         color: focused
                           ? colors.textPrimary
                           : colors.textSecondary,
-                        fontWeight: '700',
+                        fontWeight: colors.fontBold,
                         fontSize: 10,
                       }}>
                       Home
@@ -142,7 +135,7 @@ export default function Memesfr() {
                   </>
                 ),
               }}
-              component={Notifications}
+              component={NotificationScreen}
               name="Notifications"
             />
             <Tab.Screen

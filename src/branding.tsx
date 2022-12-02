@@ -31,7 +31,6 @@ export const Branding = props => {
         {routes
           ? routes.map((route, index) => {
               const {options} = props.descriptors[route.key];
-              console.log(props.navigation);
               const label =
                 options.tabBarLabel !== undefined
                   ? options.tabBarLabel
@@ -41,13 +40,17 @@ export const Branding = props => {
 
               const isFocused = props.state.index === index;
 
-              const onPress = () => {
-                const event = props.navigation?.emit({
-                  type: 'tabPress',
-                  target: route.key,
-                });
+              console.log(props.navigation);
 
-                if (!isFocused && !event.defaultPrevented) {
+              const onPress = () => {
+                // This is causing an error - undefined is not a function
+                // const event = props.navigation?.emit({
+                //   type: 'tabPress',
+                //   target: route.key,
+                // });
+
+                // included in the if statement is '&& !event.defaultPrevented'
+                if (!isFocused) {
                   props.navigation?.navigate(route.name);
                 }
               };
@@ -61,6 +64,8 @@ export const Branding = props => {
 
               const Icon = iconMap[label];
 
+              const adjustment = label === 'Recent' ? 6 : 0;
+
               return (
                 <BrandingIcon
                   onLongPress={onLongPress}
@@ -72,7 +77,7 @@ export const Branding = props => {
                         isFocused ? colors.textPrimary : colors.textSecondary
                       }
                       height={colors.iconHeight}
-                      width={colors.iconWidth}
+                      width={colors.iconWidth - adjustment}
                     />
                   }
                   text={label}
@@ -126,11 +131,12 @@ function BrandingIcon({
         alignItems: 'center',
         borderBottomWidth: 2,
         borderBottomColor: isFocused ? colors.textPrimary : 'transparent',
-      }}
-      // onPress={() => setActive(1)}>
-    >
+      }}>
       <Text
-        style={{color: isFocused ? colors.textPrimary : colors.textSecondary}}>
+        style={{
+          color: isFocused ? colors.textPrimary : colors.textSecondary,
+          marginRight: 4,
+        }}>
         {text}
       </Text>
 
@@ -146,7 +152,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     top: 0,
-    height: 40,
+    height: colors.topbarHeight,
     width: '100%',
     zIndex: 20,
     paddingHorizontal: 10,
