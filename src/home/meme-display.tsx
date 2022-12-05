@@ -1,20 +1,38 @@
-import React, {useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import type {Post} from '../custom-hooks/use-posts';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Touchable,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import Video from 'react-native-video';
 import {colors} from '../theme';
 import Crown from '../assets/crown.svg';
 import Share from '../assets/share.svg';
 import ChatBubble from '../assets/chat-bubble.svg';
 import Heart from '../assets/heart.svg';
+import Fingerprint from '../assets/finger.svg';
+import Cancel from '../assets/cancel.svg';
 
+import HapticFeedback from 'react-native-haptic-feedback';
 type PopularProps = {
   posts: Post[];
 };
 export default function MemeDisplay({posts}: PopularProps) {
   const [pause, setPause] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [opened, setOpened] = useState(false);
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const {width: windowWidth, height: windowHeight} = useWindowDimensions();
 
   function togglePause() {
     setPause(prev => !prev);
@@ -25,23 +43,49 @@ export default function MemeDisplay({posts}: PopularProps) {
   function lowerActiveIndex() {
     setActiveIndex(prev => (prev > 0 ? prev - 1 : prev));
   }
+
+  const handleLongPress = useCallback(() => {
+    setOpened(prev => !prev);
+    HapticFeedback.trigger('impactMedium');
+  }, []);
+
   if (!posts || posts.length === 0) {
     return null;
   }
+
   return (
-    <GestureRecognizer
-      onSwipeDown={lowerActiveIndex}
-      onSwipeUp={raiseActiveIndex}
-      style={{backgroundColor: 'black', height: '100%', width: '100%'}}>
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: 'flex',
+        flex: 1,
+        position: 'relative',
+      }}>
       <View
         style={{
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          display: 'flex',
           flex: 1,
           position: 'relative',
-        }}>
+          backgroundColor: 'green',
+        }}></View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          {useNativeDriver: false},
+        )}
+        style={{
+          backgroundColor: 'pink',
+        }}
+        scrollEventThrottle={1}>
         {posts.map((post: Post, index) => {
           if (index !== activeIndex) {
             return null;
@@ -49,7 +93,15 @@ export default function MemeDisplay({posts}: PopularProps) {
 
           if (post.format === 'photo') {
             return (
-              <View style={{flex: 1, width: '100%', position: 'relative'}}>
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  width: windowWidth,
+                  height: windowHeight,
+                  position: 'relative',
+                }}>
                 <Image
                   key={post.id}
                   style={{
@@ -59,10 +111,14 @@ export default function MemeDisplay({posts}: PopularProps) {
                   }}
                   source={{uri: post.url}}
                 />
-                <MemeSidebar />
+                <LongPressCornerButton
+                  opened={opened}
+                  handleLongPress={handleLongPress}
+                />
               </View>
             );
           }
+
           // const {format} = post;
           // return format === 'photo' ? (
           //   <Image
@@ -119,8 +175,112 @@ export default function MemeDisplay({posts}: PopularProps) {
           //   </Pressable>
           // ) : null;
         })}
+      </ScrollView>
+    </View>
+  );
+}
+
+const CornerButtonOptions = () => {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        flex: 1,
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+      }}>
+      <Text>Oh wow</Text>
+    </View>
+  );
+};
+
+function LongPressButton({children}: any) {
+  const [isHovering, setIsHovering] = useState(false);
+  const handleLongPress = useCallback(() => {
+    HapticFeedback.trigger('impactMedium');
+  }, []);
+
+  return (
+    <Pressable
+      style={{
+        borderWidth: 2,
+        borderColor: 'white',
+        borderRadius: 100,
+        padding: 20,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+      }}
+      onHoverIn={handleLongPress}>
+      {children}
+    </Pressable>
+  );
+}
+
+function LongPressCornerButton({handleLongPress, opened}: any) {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        width: 120,
+        height: 150,
+      }}>
+      <View style={{position: 'relative', flex: 1}}>
+        {opened ? (
+          <>
+            <View style={{position: 'absolute', top: '30%', right: 0}}>
+              <LongPressButton>
+                <Crown
+                  fill={'black'}
+                  width={colors.iconWidth}
+                  height={colors.iconHeight}
+                />
+              </LongPressButton>
+            </View>
+            <View style={{position: 'absolute', bottom: '50%', left: '37%'}}>
+              <LongPressButton>
+                <ChatBubble
+                  stroke={'black'}
+                  width={colors.iconWidth}
+                  height={colors.iconHeight}
+                />
+              </LongPressButton>
+            </View>
+            <View style={{position: 'absolute', bottom: 0, left: '10%'}}>
+              <LongPressButton>
+                <Share
+                  stroke={'black'}
+                  width={colors.iconWidth}
+                  height={colors.iconHeight}
+                />
+              </LongPressButton>
+            </View>
+          </>
+        ) : null}
+
+        <Pressable
+          style={{
+            borderWidth: 2,
+            borderColor: 'white',
+            borderRadius: 100,
+            padding: 20,
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            transform: [{scale: opened ? 0.8 : 1}],
+          }}
+          onLongPress={handleLongPress}>
+          {opened ? (
+            <Cancel width={colors.iconWidth} height={colors.iconHeight} />
+          ) : (
+            <Fingerprint width={colors.iconWidth} height={colors.iconHeight} />
+          )}
+        </Pressable>
       </View>
-    </GestureRecognizer>
+    </View>
   );
 }
 
@@ -173,13 +333,24 @@ function MemeSidebarItem({
     />
   ),
   text,
+  onClick = () => {},
 }: {
   icon?: any;
   text: string;
+  onClick?: Function;
 }) {
+  const options = {
+    enableVibrateFallback: true,
+    ignoreAndroidSystemSettings: false,
+  };
   return (
     <View style={styles.memeSidebarIconContainerParent}>
-      <View style={styles.memeSidebarIconContainer}>{icon}</View>
+      <Pressable
+        onPress={() => {
+          HapticFeedback.trigger('impactMedium');
+        }}>
+        <View style={styles.memeSidebarIconContainer}>{icon}</View>
+      </Pressable>
       <Text style={{color: 'white', fontSize: colors.fontMd}}>{text}</Text>
     </View>
   );
@@ -189,9 +360,12 @@ const styles = StyleSheet.create({
   memeSidebarContainerParent: {
     position: 'absolute',
     right: 0,
-    bottom: 40,
+    bottom: 0,
     height: colors.interactionHeight,
     width: colors.interactionWidth,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   memeSidebarContainer: {
     display: 'flex',
@@ -204,7 +378,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 22,
+    paddingVertical: 10,
   },
   memeSidebarIconContainer: {
     display: 'flex',
@@ -214,6 +388,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff69',
     paddingVertical: 10,
     paddingHorizontal: 10,
-    marginBottom: 10,
   },
 });

@@ -36,6 +36,6 @@ export const colors = {
 
   // calcs
   topbarHeight: 40,
-  interactionHeight: 200,
+  interactionHeight: 340,
   interactionWidth: 80,
 };

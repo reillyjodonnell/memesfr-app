@@ -40,8 +40,6 @@ export const Branding = props => {
 
               const isFocused = props.state.index === index;
 
-              console.log(props.navigation);
-
               const onPress = () => {
                 // This is causing an error - undefined is not a function
                 // const event = props.navigation?.emit({
