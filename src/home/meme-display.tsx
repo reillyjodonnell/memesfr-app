@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   Pressable,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -54,129 +55,113 @@ export default function MemeDisplay({posts}: PopularProps) {
   }
 
   return (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        display: 'flex',
-        flex: 1,
-        position: 'relative',
-      }}>
-      <View
-        style={{
-          flex: 1,
-          position: 'relative',
-          backgroundColor: 'green',
-        }}></View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
-                },
+    <ScrollView
+      contentContainerStyle={{flexGrow: 1}}
+      showsVerticalScrollIndicator={true}
+      onScroll={Animated.event(
+        [
+          {
+            nativeEvent: {
+              contentOffset: {
+                y: scrollY,
               },
             },
-          ],
-          {useNativeDriver: false},
-        )}
-        style={{
-          backgroundColor: 'pink',
-        }}
-        scrollEventThrottle={1}>
-        {posts.map((post: Post, index) => {
-          if (index !== activeIndex) {
-            return null;
-          }
+          },
+        ],
+        {useNativeDriver: false},
+      )}
+      style={{
+        backgroundColor: 'yellow',
+      }}
+      scrollEventThrottle={1}>
+      {posts.map((post: Post, index) => {
+        if (index !== activeIndex) {
+          return null;
+        }
 
-          if (post.format === 'photo') {
-            return (
-              <View
-                key={index}
+        if (post.format === 'photo') {
+          return (
+            <View
+              key={index}
+              style={{
+                flex: 1,
+                backgroundColor: 'black',
+              }}>
+              <Image
+                key={post.id}
                 style={{
-                  flex: 1,
-                  display: 'flex',
-                  width: windowWidth,
-                  height: windowHeight,
-                  position: 'relative',
-                }}>
-                <Image
-                  key={post.id}
-                  style={{
-                    flex: 1,
-                    height: '100%',
-                    resizeMode: 'contain',
-                  }}
-                  source={{uri: post.url}}
-                />
-                <LongPressCornerButton
-                  opened={opened}
-                  handleLongPress={handleLongPress}
-                />
-              </View>
-            );
-          }
+                  height: '100%',
+                  width: '100%',
+                  resizeMode: 'contain',
+                  backgroundColor: 'blue',
+                }}
+                source={{uri: post.url}}
+              />
+              <LongPressCornerButton
+                opened={opened}
+                handleLongPress={handleLongPress}
+              />
+            </View>
+          );
+        }
 
-          // const {format} = post;
-          // return format === 'photo' ? (
-          //   <Image
-          //     key={post.id}
-          //     style={{
-          //       flex: 1,
-          //       width: '100%',
-          //       resizeMode: 'contain',
-          //     }}
-          //     source={{uri: post.url}}
-          //   />
-          // ) : format === 'video' ? (
-          //   <Pressable
-          //     key={post.id}
-          //     style={{
-          //       height: '100%',
-          //       width: '100%',
-          //       position: 'relative',
-          //     }}
-          //     onPress={togglePause}>
-          //     {pause ? (
-          //       <View
-          //         style={{
-          //           position: 'absolute',
-          //           top: 0,
-          //           left: 0,
-          //           right: 0,
-          //           bottom: 0,
-          //           justifyContent: 'center',
-          //           alignItems: 'center',
-          //           zIndex: 20,
-          //         }}>
-          //         <Text
-          //           style={{
-          //             color: colors.textPrimary,
-          //             fontSize: 40,
-          //           }}>
-          //           ▶️
-          //         </Text>
-          //       </View>
-          //     ) : null}
-          //     <Video
-          //       style={{
-          //         flex: 1,
-          //         width: '100%',
-          //         height: '100%',
-          //         opacity: pause ? 0.85 : 1,
-          //       }}
-          //       onError={err => console.log(err)}
-          //       source={{uri: post.url}}
-          //       repeat
-          //       paused={pause}
-          //     />
-          //   </Pressable>
-          // ) : null;
-        })}
-      </ScrollView>
-    </View>
+        // const {format} = post;
+        // return format === 'photo' ? (
+        //   <Image
+        //     key={post.id}
+        //     style={{
+        //       flex: 1,
+        //       width: '100%',
+        //       resizeMode: 'contain',
+        //     }}
+        //     source={{uri: post.url}}
+        //   />
+        // ) : format === 'video' ? (
+        //   <Pressable
+        //     key={post.id}
+        //     style={{
+        //       height: '100%',
+        //       width: '100%',
+        //       position: 'relative',
+        //     }}
+        //     onPress={togglePause}>
+        //     {pause ? (
+        //       <View
+        //         style={{
+        //           position: 'absolute',
+        //           top: 0,
+        //           left: 0,
+        //           right: 0,
+        //           bottom: 0,
+        //           justifyContent: 'center',
+        //           alignItems: 'center',
+        //           zIndex: 20,
+        //         }}>
+        //         <Text
+        //           style={{
+        //             color: colors.textPrimary,
+        //             fontSize: 40,
+        //           }}>
+        //           ▶️
+        //         </Text>
+        //       </View>
+        //     ) : null}
+        //     <Video
+        //       style={{
+        //         flex: 1,
+        //         width: '100%',
+        //         height: '100%',
+        //         opacity: pause ? 0.85 : 1,
+        //       }}
+        //       onError={err => console.log(err)}
+        //       source={{uri: post.url}}
+        //       repeat
+        //       paused={pause}
+        //     />
+        //   </Pressable>
+        // ) : null;
+      })}
+    </ScrollView>
   );
 }
 
