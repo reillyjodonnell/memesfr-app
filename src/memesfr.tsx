@@ -11,6 +11,7 @@ import User from './assets/user.svg';
 import HomeScreen from './home/home';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import NotificationScreen from './notifications/notifications';
+import Profile from './profile/profile';
 
 const StackHeader = () => {
   return (
@@ -250,7 +251,7 @@ export default function Memesfr() {
                   </>
                 ),
               }}
-              component={Upload}
+              component={Profile}
               name="Profile"
             />
           </Tab.Navigator>

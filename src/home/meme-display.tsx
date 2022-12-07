@@ -33,7 +33,6 @@ export default function MemeDisplay({posts}: PopularProps) {
   const [opened, setOpened] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const {width: windowWidth, height: windowHeight} = useWindowDimensions();
 
   function togglePause() {
     setPause(prev => !prev);
@@ -50,13 +49,18 @@ export default function MemeDisplay({posts}: PopularProps) {
     HapticFeedback.trigger('impactMedium');
   }, []);
 
+  const {width: windowWidth, height: windowHeight} = useWindowDimensions();
+
   if (!posts || posts.length === 0) {
     return null;
   }
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1}}
+      contentContainerStyle={{
+        flexGrow: 1,
+        flex: 1,
+      }}
       showsVerticalScrollIndicator={true}
       onScroll={Animated.event(
         [
@@ -71,29 +75,28 @@ export default function MemeDisplay({posts}: PopularProps) {
         {useNativeDriver: false},
       )}
       style={{
-        backgroundColor: 'yellow',
+        backgroundColor: 'black',
+        height: '100%',
+        flex: 1,
+        display: 'flex',
       }}
       scrollEventThrottle={1}>
       {posts.map((post: Post, index) => {
-        if (index !== activeIndex) {
-          return null;
-        }
-
         if (post.format === 'photo') {
           return (
             <View
               key={index}
               style={{
-                flex: 1,
-                backgroundColor: 'black',
+                display: 'flex',
+                height: '100%',
               }}>
               <Image
                 key={post.id}
                 style={{
+                  display: 'flex',
+                  flex: 1,
                   height: '100%',
-                  width: '100%',
                   resizeMode: 'contain',
-                  backgroundColor: 'blue',
                 }}
                 source={{uri: post.url}}
               />
@@ -104,62 +107,6 @@ export default function MemeDisplay({posts}: PopularProps) {
             </View>
           );
         }
-
-        // const {format} = post;
-        // return format === 'photo' ? (
-        //   <Image
-        //     key={post.id}
-        //     style={{
-        //       flex: 1,
-        //       width: '100%',
-        //       resizeMode: 'contain',
-        //     }}
-        //     source={{uri: post.url}}
-        //   />
-        // ) : format === 'video' ? (
-        //   <Pressable
-        //     key={post.id}
-        //     style={{
-        //       height: '100%',
-        //       width: '100%',
-        //       position: 'relative',
-        //     }}
-        //     onPress={togglePause}>
-        //     {pause ? (
-        //       <View
-        //         style={{
-        //           position: 'absolute',
-        //           top: 0,
-        //           left: 0,
-        //           right: 0,
-        //           bottom: 0,
-        //           justifyContent: 'center',
-        //           alignItems: 'center',
-        //           zIndex: 20,
-        //         }}>
-        //         <Text
-        //           style={{
-        //             color: colors.textPrimary,
-        //             fontSize: 40,
-        //           }}>
-        //           ▶️
-        //         </Text>
-        //       </View>
-        //     ) : null}
-        //     <Video
-        //       style={{
-        //         flex: 1,
-        //         width: '100%',
-        //         height: '100%',
-        //         opacity: pause ? 0.85 : 1,
-        //       }}
-        //       onError={err => console.log(err)}
-        //       source={{uri: post.url}}
-        //       repeat
-        //       paused={pause}
-        //     />
-        //   </Pressable>
-        // ) : null;
       })}
     </ScrollView>
   );
@@ -208,62 +155,19 @@ function LongPressCornerButton({handleLongPress, opened}: any) {
     <View
       style={{
         position: 'absolute',
-        bottom: 10,
-        right: 10,
-        width: 120,
-        height: 150,
+        width: '100%',
+        height: '100%',
+        // backgroundColor: opened ? 'rgba(0,0,0,.85)' : null,
       }}>
-      <View style={{position: 'relative', flex: 1}}>
-        {opened ? (
-          <>
-            <View style={{position: 'absolute', top: '30%', right: 0}}>
-              <LongPressButton>
-                <Crown
-                  fill={'black'}
-                  width={colors.iconWidth}
-                  height={colors.iconHeight}
-                />
-              </LongPressButton>
-            </View>
-            <View style={{position: 'absolute', bottom: '50%', left: '37%'}}>
-              <LongPressButton>
-                <ChatBubble
-                  stroke={'black'}
-                  width={colors.iconWidth}
-                  height={colors.iconHeight}
-                />
-              </LongPressButton>
-            </View>
-            <View style={{position: 'absolute', bottom: 0, left: '10%'}}>
-              <LongPressButton>
-                <Share
-                  stroke={'black'}
-                  width={colors.iconWidth}
-                  height={colors.iconHeight}
-                />
-              </LongPressButton>
-            </View>
-          </>
-        ) : null}
-
-        <Pressable
-          style={{
-            borderWidth: 2,
-            borderColor: 'white',
-            borderRadius: 100,
-            padding: 20,
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            transform: [{scale: opened ? 0.8 : 1}],
-          }}
-          onLongPress={handleLongPress}>
-          {opened ? (
-            <Cancel width={colors.iconWidth} height={colors.iconHeight} />
-          ) : (
-            <Fingerprint width={colors.iconWidth} height={colors.iconHeight} />
-          )}
-        </Pressable>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          width: 120,
+          height: 150,
+        }}>
+        <MemeInteractionSelection />
       </View>
     </View>
   );
@@ -375,3 +279,68 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
+
+const MemeInteractionSelection = () => {
+  const [showInteractionIcons, setShowInteractionIcons] = useState(false);
+
+  function handleLongPress() {
+    setShowInteractionIcons(prev => !prev);
+  }
+  return (
+    <View style={{position: 'relative', flex: 1}}>
+      {showInteractionIcons ? (
+        <>
+          <View style={{position: 'absolute', top: '30%', right: 0}}>
+            <LongPressButton>
+              <Crown
+                fill={'white'}
+                width={colors.iconWidth}
+                height={colors.iconHeight}
+              />
+            </LongPressButton>
+          </View>
+          <View style={{position: 'absolute', bottom: '50%', left: '37%'}}>
+            <LongPressButton>
+              <ChatBubble
+                stroke={'white'}
+                width={colors.iconWidth}
+                height={colors.iconHeight}
+              />
+            </LongPressButton>
+          </View>
+          <View style={{position: 'absolute', bottom: 0, left: '10%'}}>
+            <LongPressButton>
+              <Share
+                stroke={'white'}
+                width={colors.iconWidth}
+                height={colors.iconHeight}
+              />
+            </LongPressButton>
+          </View>
+        </>
+      ) : null}
+      <Pressable
+        style={{
+          borderWidth: 2,
+          borderColor: 'white',
+          borderRadius: 100,
+          padding: 20,
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          transform: [{scale: showInteractionIcons ? 0.8 : 1}],
+        }}
+        onLongPress={handleLongPress}>
+        {showInteractionIcons ? (
+          <Cancel width={colors.iconWidth} height={colors.iconHeight} />
+        ) : (
+          <Fingerprint
+            stroke={'white'}
+            width={colors.iconWidth}
+            height={colors.iconHeight}
+          />
+        )}
+      </Pressable>
+    </View>
+  );
+};

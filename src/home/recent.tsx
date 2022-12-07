@@ -4,6 +4,5 @@ import MemeDisplay from './meme-display';
 
 export default function Recent() {
   const {recentPosts} = useRecentPosts();
-
   return <MemeDisplay posts={recentPosts} />;
 }
