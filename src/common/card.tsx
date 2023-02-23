@@ -10,6 +10,7 @@ import Fingerprint from '../assets/finger.svg';
 import HapticFeedback from 'react-native-haptic-feedback';
 import Video from 'react-native-video';
 import BottomSheet from '@gorhom/bottom-sheet';
+import {formatNumber} from '../helpers/formatters';
 
 export default function Card({
   id,
@@ -162,13 +163,6 @@ function Interactions({
   comments: number;
   shares: number;
 }) {
-  //@ts-ignore
-  const formatter = Intl.NumberFormat('en', {notation: 'compact'});
-
-  function format(number = 0) {
-    return formatter.format(number);
-  }
-
   return (
     <View
       style={{
@@ -202,7 +196,7 @@ function Interactions({
           </LongPressButton>
           <Text
             style={{color: colors.textPrimary, fontWeight: colors.fontBold}}>
-            {format(crowns)}
+            {formatNumber(crowns)}
           </Text>
         </View>
         <View
@@ -220,7 +214,7 @@ function Interactions({
           </LongPressButton>
           <Text
             style={{color: colors.textPrimary, fontWeight: colors.fontBold}}>
-            {format(comments)}
+            {formatNumber(comments)}
           </Text>
         </View>
         <View
@@ -238,7 +232,7 @@ function Interactions({
           </LongPressButton>
           <Text
             style={{color: colors.textPrimary, fontWeight: colors.fontBold}}>
-            {format(shares)}
+            {formatNumber(shares)}
           </Text>
         </View>
       </View>
