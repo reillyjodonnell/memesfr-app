@@ -64,8 +64,8 @@ export const colors = {
   strokeNormal: '1.5',
 
   // fonts
-  fontSm: 10,
-  fontMd: 15,
+  fontSm: 12,
+  fontMd: 16,
   fontLg: 20,
   fontXL: 25,
 
@@ -75,4 +75,7 @@ export const colors = {
   heightOfTopAndBottomBars: 100,
   interactionHeight: 340,
   interactionWidth: 80,
+
+  avatarWidth: 50,
+  avatarHeight: 50,
 };

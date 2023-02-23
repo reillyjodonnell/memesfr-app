@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
 // import Video from 'react-native-video';
@@ -24,6 +25,7 @@ type PopularProps = {
 export default function MemeDisplay({posts}: PopularProps) {
   const [pause, setPause] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const {width, height} = useWindowDimensions();
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -47,11 +49,19 @@ export default function MemeDisplay({posts}: PopularProps) {
   }
 
   return (
-    <ScrollView style={{backgroundColor: colors.bg}}>
+    <ScrollView
+      showsVerticalScrollIndicator
+      // disableIntervalMomentum
+      pagingEnabled={true}
+      snapToInterval={height * 0.77}
+      snapToAlignment={'center'}
+      decelerationRate={0}
+      style={{backgroundColor: colors.bg}}>
       {posts.map((post: Post, index) => {
         return (
           <Card
             id={post.id}
+            title={post.title}
             username={post.creator}
             crowns={post.crowns}
             comments={post.comments}
@@ -66,7 +76,8 @@ export default function MemeDisplay({posts}: PopularProps) {
         return (
           <Card
             id={post.id}
-            username={post.username}
+            title={post.title}
+            username={post.creator}
             crowns={post.crowns}
             comments={post.comments}
             shares={post.shares}

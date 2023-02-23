@@ -19,7 +19,7 @@ describe('formatNumber', () => {
     expect(formatNumber(999950000)).toEqual('1.0B');
     expect(formatNumber(999949999999)).toEqual('999.9B');
   });
-  it('should format numbers for trillions correctly from numbers 999,950,000,000 (999.95 million) and larger', () => {
+  it('should format numbers for trillions correctly for numbers 999,950,000,000 (999.95 million) and larger', () => {
     expect(formatNumber(999950999999)).toEqual('1.0T');
     expect(formatNumber(999900000000000)).toEqual('999.9T');
   });

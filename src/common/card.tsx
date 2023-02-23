@@ -20,6 +20,7 @@ export default function Card({
   crowns,
   comments,
   shares,
+  title,
 }: any) {
   const {width: windowWidth, height: windowHeight} = useWindowDimensions();
 
@@ -56,7 +57,7 @@ export default function Card({
         </BottomSheet>
       </View> */}
 
-      <AuthorSection username={username} />
+      <AuthorAndTitleSection title={title} username={username} />
 
       <View
         style={{
@@ -93,9 +94,9 @@ export default function Card({
   );
 }
 
-function AuthorSection({
+function AuthorAndTitleSection({
   avatar = '',
-  title = 'No title provided!',
+  title = '',
   username = 'Greg',
   verified = true,
 }) {
@@ -108,10 +109,10 @@ function AuthorSection({
         position: 'absolute',
         bottom: 0,
         left: 0,
-        paddingVertical: colors.spacing.l,
-        paddingHorizontal: colors.spacing.l,
+        paddingVertical: colors.spacing.m,
+        paddingHorizontal: colors.spacing.m,
       }}>
-      <View style={{height: 40, width: 40}}>
+      <View style={{height: colors.avatarHeight, width: colors.avatarWidth}}>
         <Image
           style={{
             borderRadius: 1000,
