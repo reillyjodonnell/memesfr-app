@@ -12,6 +12,7 @@ const iconMap = {
 };
 
 export const Branding = props => {
+  console.log(props);
   const routes = props?.state?.routes;
   return (
     <View style={styles.logoContainer}>
@@ -74,8 +75,8 @@ export const Branding = props => {
                       stroke={
                         isFocused ? colors.textPrimary : colors.textSecondary
                       }
-                      height={colors.iconHeight}
-                      width={colors.iconWidth - adjustment}
+                      height={colors.iconHeight - 6}
+                      width={colors.iconWidth - 6}
                     />
                   }
                   text={label}
@@ -132,6 +133,8 @@ function BrandingIcon({
       }}>
       <Text
         style={{
+          fontSize: colors.fontMd,
+          fontWeight: 'bold',
           color: isFocused ? colors.textPrimary : colors.textSecondary,
           marginRight: 4,
         }}>
@@ -151,6 +154,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     height: colors.topbarHeight,
+    backgroundColor: colors.transparent,
+
     width: '100%',
     zIndex: 20,
     paddingHorizontal: 10,

@@ -1,14 +1,5 @@
 import {useState} from 'react';
 
-export type Post = {
-  id: number;
-  title: string;
-  url: string;
-  likes: number;
-  creator: string;
-  format: 'photo' | 'video';
-};
-
 export default function usePosts() {
   const [posts, setPosts] = useState<Post[]>([
     {

@@ -36,7 +36,6 @@ export default function Memesfr() {
       <SafeAreaView
         style={{
           height: '100%',
-          backgroundColor: colors.bg,
         }}>
         {isSignedIn ? (
           <Tab.Navigator
