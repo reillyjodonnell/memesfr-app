@@ -11,12 +11,15 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Memesfr from './src/memesfr';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Memesfr />
-    </NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+        <Memesfr />
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 };
 

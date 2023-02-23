@@ -1,3 +1,6 @@
 TODO:
-- Add Swipable functionality for memes
-- 
+
+- add loading animation for images
+- add comment section
+- add profiles
+- add like animation

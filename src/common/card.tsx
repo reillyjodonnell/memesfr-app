@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef, useMemo} from 'react';
 import {View, Text, Image, useWindowDimensions, Pressable} from 'react-native';
 import Verified from '../assets/verified.svg';
 import {colors} from '../theme';
@@ -9,6 +9,7 @@ import Cancel from '../assets/cancel.svg';
 import Fingerprint from '../assets/finger.svg';
 import HapticFeedback from 'react-native-haptic-feedback';
 import Video from 'react-native-video';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 export default function Card({
   id,
@@ -20,6 +21,17 @@ export default function Card({
   shares,
 }: any) {
   const {width: windowWidth, height: windowHeight} = useWindowDimensions();
+
+  // ref
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   return (
     <View
@@ -33,7 +45,18 @@ export default function Card({
         marginBottom: colors.spacing.m,
         position: 'relative',
       }}>
+      {/* <View style={{flex: 1}}>
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}>
+          <Text>Awesome 🎉</Text>
+        </BottomSheet>
+      </View> */}
+
       <AuthorSection username={username} />
+
       <View
         style={{
           flex: 1,
@@ -139,6 +162,13 @@ function Interactions({
   comments: number;
   shares: number;
 }) {
+  //@ts-ignore
+  const formatter = Intl.NumberFormat('en', {notation: 'compact'});
+
+  function format(number = 0) {
+    return formatter.format(number);
+  }
+
   return (
     <View
       style={{
@@ -172,7 +202,7 @@ function Interactions({
           </LongPressButton>
           <Text
             style={{color: colors.textPrimary, fontWeight: colors.fontBold}}>
-            {crowns}
+            {format(crowns)}
           </Text>
         </View>
         <View
@@ -190,7 +220,7 @@ function Interactions({
           </LongPressButton>
           <Text
             style={{color: colors.textPrimary, fontWeight: colors.fontBold}}>
-            {comments}
+            {format(comments)}
           </Text>
         </View>
         <View
@@ -208,7 +238,7 @@ function Interactions({
           </LongPressButton>
           <Text
             style={{color: colors.textPrimary, fontWeight: colors.fontBold}}>
-            {shares}
+            {format(shares)}
           </Text>
         </View>
       </View>
