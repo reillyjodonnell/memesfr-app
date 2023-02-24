@@ -8,7 +8,7 @@ import ChatBubble from '../assets/chat-bubble.svg';
 import Cancel from '../assets/cancel.svg';
 import Fingerprint from '../assets/finger.svg';
 import HapticFeedback from 'react-native-haptic-feedback';
-import Video from 'react-native-video';
+import {Video} from 'expo-av';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {formatNumber} from '../helpers/formatters';
 import * as Haptics from 'expo-haptics';
@@ -80,6 +80,9 @@ export default function Card({
           />
         ) : format === 'video' ? (
           <Video
+            isLooping
+            shouldPlay
+            useNativeControls
             style={{
               height: '100%',
               width: '100%',
@@ -87,7 +90,7 @@ export default function Card({
               // resizeMode: 'contain',
             }}
             source={{
-              uri: 'https://v.redd.it/cy2ch3b4mpja1/DASH_96.mp4',
+              uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
             }}
           />
         ) : null}
