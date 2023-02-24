@@ -1,8 +1,9 @@
 import React from 'react';
 import type {Post} from '../custom-hooks/use-popular-posts';
-import {ScrollView, useWindowDimensions} from 'react-native';
+import {useWindowDimensions, View} from 'react-native';
 import {colors} from '../theme';
 import Card from '../common/card';
+import {FlashList} from '@shopify/flash-list';
 
 type PopularProps = {
   posts: Post[];
@@ -15,42 +16,32 @@ export default function MemeDisplay({posts}: PopularProps) {
   }
 
   return (
-    <ScrollView
-      pagingEnabled={true}
-      snapToInterval={height * 0.77}
-      snapToAlignment={'center'}
-      decelerationRate={0}
-      style={{backgroundColor: colors.bg}}>
-      {posts.map((post: Post, index) => {
-        return (
-          <Card
-            id={post.id}
-            title={post.title}
-            username={post.creator}
-            crowns={post.crowns}
-            comments={post.comments}
-            shares={post.shares}
-            format={post.format}
-            url={post.url}
-            key={index}
-          />
-        );
-      })}
-      {posts.map((post: Post, index) => {
-        return (
-          <Card
-            id={post.id}
-            title={post.title}
-            username={post.creator}
-            crowns={post.crowns}
-            comments={post.comments}
-            shares={post.shares}
-            format={post.format}
-            url={post.url}
-            key={index}
-          />
-        );
-      })}
-    </ScrollView>
+    <View style={{flex: 1, backgroundColor: colors.bg}}>
+      <FlashList
+        pagingEnabled={true}
+        snapToInterval={height * 0.77}
+        snapToAlignment={'center'}
+        decelerationRate={0}
+        contentContainerStyle={{backgroundColor: colors.bg}}
+        data={posts}
+        estimatedItemSize={200}
+        renderItem={({item}: {item: Post}) => {
+          const {id, title, creator, crowns, comments, shares, format, url} =
+            item;
+          return (
+            <Card
+              id={id}
+              title={title}
+              username={creator}
+              crowns={crowns}
+              comments={comments}
+              shares={shares}
+              format={format}
+              url={url}
+            />
+          );
+        }}
+      />
+    </View>
   );
 }
