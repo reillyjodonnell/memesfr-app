@@ -11,6 +11,7 @@ import HapticFeedback from 'react-native-haptic-feedback';
 import Video from 'react-native-video';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {formatNumber} from '../helpers/formatters';
+import * as Haptics from 'expo-haptics';
 
 export default function Card({
   id,
@@ -81,10 +82,13 @@ export default function Card({
           <Video
             style={{
               height: '100%',
-              backgroundColor: colors.semiTransparent,
+              width: '100%',
+              backgroundColor: colors.accent,
               // resizeMode: 'contain',
             }}
-            source={{uri: url}}
+            source={{
+              uri: 'https://v.redd.it/cy2ch3b4mpja1/DASH_96.mp4',
+            }}
           />
         ) : null}
         <Interactions crowns={crowns} comments={comments} shares={shares} />
@@ -249,6 +253,9 @@ function LongPressButton({children, active}: any) {
 
   return (
     <Pressable
+      onPress={() =>
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+      }
       style={{
         borderWidth: 2,
         marginVertical: 10,

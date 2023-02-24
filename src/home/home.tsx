@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 const Tab = createMaterialTopTabNavigator();
 
-function HomeComponent({navigation}: any) {
+export default function HomeComponent({navigation}: any) {
   return (
     <View
       style={{
@@ -83,50 +83,6 @@ function HomeComponent({navigation}: any) {
         <Tab.Screen name="Popular" component={Popular} />
         <Tab.Screen name="Recent" component={Recent} />
       </Tab.Navigator>
-    </View>
-  );
-}
-
-export default function HomeWrapper() {
-  return (
-    <Stack.Navigator
-      screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
-      <Stack.Screen name="Home" component={HomeComponent} />
-      <Stack.Screen name="Notifications" component={Notifications} />
-    </Stack.Navigator>
-  );
-}
-
-function Notifications(props) {
-  return (
-    <View
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: colors.bg,
-      }}>
-      <Topbar>
-        <Pressable
-          onPress={() => props?.navigation?.pop()}
-          style={{marginRight: 'auto'}}>
-          <LeftArrow
-            width={colors.iconWidth + 10}
-            height={colors.iconHeight + 10}
-            stroke={'white'}
-          />
-        </Pressable>
-        <Text
-          style={{
-            color: colors.textPrimary,
-            fontWeight: colors.fontBold,
-            marginRight: 'auto',
-            fontSize: colors.fontLg,
-          }}>
-          Search
-        </Text>
-      </Topbar>
     </View>
   );
 }

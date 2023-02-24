@@ -1,4 +1,7 @@
 {
   "name": "memesfrApp",
-  "displayName": "memesfrApp"
+  "displayName": "memesfrApp",
+  "expo": {
+    "plugins": ["expo-image-picker"]
+  }
 }
