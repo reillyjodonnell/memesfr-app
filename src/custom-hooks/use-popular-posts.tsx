@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {FILE_TYPE} from '../constants';
 
 export type Post = {
   id: number;
@@ -8,18 +9,18 @@ export type Post = {
   comments: number;
   shares: number;
   creator: string;
-  format: 'photo' | 'video';
+  format: FILE_TYPE;
 };
 
 export default function usePopularPosts() {
   const [popularPosts, setPopularPosts] = useState<Post[]>([
     {
       id: 0,
-      format: 'photo',
+      format: FILE_TYPE.IMAGE,
       title: 'lmao',
       url: 'https://i.chzbgr.com/thumb800/17766917/hE749C9B5/funny-random-memes-dank-memes-humor',
-      crowns: 14320,
-      comments: 4392,
+      crowns: 2437,
+      comments: 8,
       shares: 2423,
       creator: 'Rach',
     },

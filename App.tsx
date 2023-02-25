@@ -14,13 +14,16 @@ import Memesfr from './src/memesfr';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native';
 import {colors} from './src/theme';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const App = () => {
   return (
     <SafeAreaView style={{backgroundColor: colors.bg, flex: 1}}>
       <GestureHandlerRootView style={{flex: 1}}>
         <NavigationContainer>
-          <Memesfr />
+          <BottomSheetModalProvider>
+            <Memesfr />
+          </BottomSheetModalProvider>
         </NavigationContainer>
       </GestureHandlerRootView>
     </SafeAreaView>

@@ -2,7 +2,14 @@ TODO:
 
 <!-- DONE add formatter for numbers on memes (K, M, etc.) -->
 
-- add loading animation for images
+// Card
+
+- add loading animation for images (using suspense for now)
 - add comment section
-- add profiles
 - add like animation
+
+// pages
+
+- add profiles
+- add notifications page
+- add messages page

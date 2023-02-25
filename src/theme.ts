@@ -7,13 +7,13 @@ const palette = {
   red: '#ff1b1c',
   blue: '#20a4f3',
   green: '#5eeb5b',
-  purple: '#cb48b7',
+  purple: 'rgba(203, 72, 183, 1)',
 
   // orange-highlight: #ff80119c;
   // red-highlight: #ff1b1b9f;
   // secondary-blue-highlight: #20a6f3a1;
   // green-highlight: #5deb5b8a;
-  purpleHighlight: '#cb48b798',
+  purpleHighlight: 'rgba(203, 72, 183, 0.6)',
 
   // orange-light-highlight: #ff801127;
   // red-light-highlight: #ff1b1b27;
@@ -47,6 +47,7 @@ export const colors = {
 
   // borders
   rounded: 10,
+  circular: 10000,
 
   // icons
   iconWidth: 30,
@@ -64,7 +65,7 @@ export const colors = {
   strokeNormal: '1.5',
 
   // fonts
-  fontSm: 12,
+  fontSm: 14,
   fontMd: 16,
   fontLg: 20,
   fontXL: 25,

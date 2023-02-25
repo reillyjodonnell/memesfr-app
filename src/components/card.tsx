@@ -1,5 +1,13 @@
-import React, {useState, useCallback, useRef, useMemo} from 'react';
-import {View, Text, Image, useWindowDimensions, Pressable} from 'react-native';
+import React, {useState, useCallback, useRef} from 'react';
+import {
+  View,
+  Text,
+  useWindowDimensions,
+  Pressable,
+  Animated,
+  TouchableWithoutFeedback,
+  StyleSheet,
+} from 'react-native';
 import Verified from '../assets/verified.svg';
 import {colors} from '../theme';
 import Crown from '../assets/crown.svg';
@@ -9,9 +17,14 @@ import Cancel from '../assets/cancel.svg';
 import Fingerprint from '../assets/finger.svg';
 import HapticFeedback from 'react-native-haptic-feedback';
 import {Video} from 'expo-av';
-import BottomSheet from '@gorhom/bottom-sheet';
 import {formatNumber} from '../helpers/formatters';
-import * as Haptics from 'expo-haptics';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import Comments from './comments';
+import UserAvatar from './user-avatar';
+import {callWithHapticFeedback} from '../helpers/haptics';
+import CreateComment from './create-comment';
+import {Image} from 'expo-image';
+import {FILE_TYPE} from '../constants';
 
 export default function Card({
   id,
@@ -26,14 +39,15 @@ export default function Card({
   const {width: windowWidth, height: windowHeight} = useWindowDimensions();
 
   // ref
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-  // variables
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
+  }, []);
+
+  const openComments = useCallback(() => {
+    bottomSheetModalRef.current?.present();
   }, []);
 
   return (
@@ -48,53 +62,34 @@ export default function Card({
         marginBottom: colors.spacing.m,
         position: 'relative',
       }}>
-      {/* <View style={{flex: 1}}>
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={1}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}>
-          <Text>Awesome 🎉</Text>
-        </BottomSheet>
-      </View> */}
-
+      <BottomSheetModal
+        handleIndicatorStyle={{
+          borderColor: colors.textSecondary,
+          borderWidth: 2,
+        }}
+        backgroundStyle={{
+          backgroundColor: colors.bg,
+        }}
+        ref={bottomSheetModalRef}
+        snapPoints={['75%']}
+        onChange={handleSheetChanges}>
+        <Comments />
+        <CreateComment uploadComment={() => {}} />
+      </BottomSheetModal>
       <AuthorAndTitleSection title={title} username={username} />
-
       <View
         style={{
           flex: 1,
-          PaddingTop: colors.spacing.l,
-          PaddingBottom: colors.spacing.l,
+          paddingVertical: colors.spacing.l,
           backgroundColor: colors.transparent,
         }}>
-        {format === 'photo' ? (
-          <Image
-            key={id}
-            style={{
-              height: '100%',
-              resizeMode: 'contain',
-              backgroundColor: colors.semiTransparent,
-              // resizeMode: 'contain',
-            }}
-            source={{uri: url}}
-          />
-        ) : format === 'video' ? (
-          <Video
-            isLooping
-            shouldPlay
-            useNativeControls
-            style={{
-              height: '100%',
-              width: '100%',
-              backgroundColor: colors.accent,
-              // resizeMode: 'contain',
-            }}
-            source={{
-              uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-            }}
-          />
-        ) : null}
-        <Interactions crowns={crowns} comments={comments} shares={shares} />
+        <Meme url={url} format={format} />
+        <Interactions
+          openComments={openComments}
+          crowns={crowns}
+          comments={comments}
+          shares={shares}
+        />
         {/* <LongPressCornerButton /> */}
       </View>
     </View>
@@ -118,18 +113,10 @@ function AuthorAndTitleSection({
         left: 0,
         paddingVertical: colors.spacing.m,
         paddingHorizontal: colors.spacing.m,
+        zIndex: 2,
       }}>
       <View style={{height: colors.avatarHeight, width: colors.avatarWidth}}>
-        <Image
-          style={{
-            borderRadius: 1000,
-            height: '100%',
-            width: '100%',
-          }}
-          source={{
-            uri: 'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/users%2FnXFuyvfojfNlpUrpQhpFHoAo9zV2?alt=media&token=ca4e01a9-c626-4794-8243-fada79fba707',
-          }}
-        />
+        <UserAvatar />
       </View>
       <View>
         <View style={{display: 'flex', paddingHorizontal: colors.spacing.s}}>
@@ -166,11 +153,63 @@ function Interactions({
   crowns = 0,
   comments = 0,
   shares = 0,
+  openComments,
 }: {
   crowns: number;
   comments: number;
   shares: number;
+  openComments: Function;
 }) {
+  const [active, setActive] = useState(false);
+  // Initial scale value of 1 means no scale applied initially.
+  const animatedValue = new Animated.Value(1);
+
+  // When button is pressed in, animate the scale to 1.5
+  const onPressIn = () => {
+    Animated.spring(animatedValue, {
+      toValue: 1.5,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  console.log(animatedValue);
+
+  // When button is pressed out, animate the scale back to 1
+  const onPressOut = () => {
+    Animated.spring(animatedValue, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const interpolateColor = animatedValue.interpolate({
+    inputRange: [1, 1.5],
+    outputRange: [colors.line, colors.accentHighlight],
+  });
+
+  // The animated style for scaling the button within the Animated.View
+  const animatedStyle = {
+    transform: [{scale: animatedValue}],
+  };
+
+  const styles = StyleSheet.create({
+    icon: {
+      borderWidth: 2,
+      marginVertical: 10,
+      borderColor: active ? colors.accentHighlight : colors.line,
+      borderRadius: 100,
+      padding: 10,
+      backgroundColor: active ? colors.accentHighlight : colors.line,
+      shadowColor: colors.accent,
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 1,
+      shadowRadius: 12,
+      elevation: 13,
+    },
+  });
   return (
     <View
       style={{
@@ -180,6 +219,7 @@ function Interactions({
         bottom: 100,
         height: 200,
         width: 80,
+        zIndex: 2,
       }}>
       <View
         style={{
@@ -195,6 +235,17 @@ function Interactions({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
+          <TouchableWithoutFeedback
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}>
+            <Animated.View style={[styles.icon, animatedStyle]}>
+              <Crown
+                fill={'white'}
+                width={colors.iconWidth}
+                height={colors.iconHeight}
+              />
+            </Animated.View>
+          </TouchableWithoutFeedback>
           <LongPressButton active={true}>
             <Crown
               fill={'white'}
@@ -213,7 +264,7 @@ function Interactions({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <LongPressButton>
+          <LongPressButton onPress={openComments}>
             <ChatBubble
               stroke={'white'}
               width={colors.iconWidth}
@@ -248,17 +299,53 @@ function Interactions({
   );
 }
 
-function LongPressButton({children, active}: any) {
-  const [isHovering, setIsHovering] = useState(false);
+type MemeProps = {
+  format: any;
+  url: string;
+};
+
+function Meme({format, url}: MemeProps) {
+  console.log(format);
+
+  console.log(format === FILE_TYPE.IMAGE);
+  console.log(url);
+  return format === FILE_TYPE.IMAGE ? (
+    <Image
+      style={{
+        height: '100%',
+        resizeMode: 'contain',
+        backgroundColor: colors.bg,
+        zIndex: 1,
+        // resizeMode: 'contain',
+      }}
+      source={{uri: url}}
+    />
+  ) : format === FILE_TYPE.VIDEO ? (
+    <Video
+      isLooping
+      shouldPlay
+      useNativeControls
+      style={{
+        height: '100%',
+        width: '100%',
+        backgroundColor: colors.accent,
+        // resizeMode: 'contain',
+      }}
+      source={{
+        uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      }}
+    />
+  ) : null;
+}
+
+function LongPressButton({children, active, onPress}: any) {
   const handleLongPress = useCallback(() => {
     HapticFeedback.trigger('impactMedium');
   }, []);
 
   return (
     <Pressable
-      onPress={() =>
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      }
+      onPress={() => callWithHapticFeedback(onPress)}
       style={{
         borderWidth: 2,
         marginVertical: 10,
@@ -266,10 +353,6 @@ function LongPressButton({children, active}: any) {
         borderRadius: 100,
         padding: 10,
         backgroundColor: active ? colors.accentHighlight : colors.line,
-        // position: 'absolute',
-        // bottom: 0,
-        // right: 0,
-
         shadowColor: colors.accent,
         shadowOffset: {
           width: 0,
