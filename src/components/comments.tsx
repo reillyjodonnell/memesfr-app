@@ -82,16 +82,14 @@ export default function Comments() {
         </View>
 
         {comments.map(({comment, likes, liked, author, id, avatar}) => (
-          <>
-            <UserComment
-              key={id}
-              comment={comment}
-              likes={likes}
-              liked={liked}
-              username={author}
-              avatar={avatar}
-            />
-          </>
+          <UserComment
+            key={id}
+            comment={comment}
+            likes={likes}
+            liked={liked}
+            username={author}
+            avatar={avatar}
+          />
         ))}
 
         {!comments.length && (

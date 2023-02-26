@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {FILE_TYPE} from '../constants';
+import {FILE_TYPES} from '../constants';
 
 export type Post = {
   id: number;
@@ -9,14 +9,14 @@ export type Post = {
   comments: number;
   shares: number;
   creator: string;
-  format: FILE_TYPE;
+  format: FILE_TYPES;
 };
 
 export default function usePopularPosts() {
   const [popularPosts, setPopularPosts] = useState<Post[]>([
     {
       id: 0,
-      format: FILE_TYPE.IMAGE,
+      format: FILE_TYPES.IMAGE,
       title: 'lmao',
       url: 'https://i.chzbgr.com/thumb800/17766917/hE749C9B5/funny-random-memes-dank-memes-humor',
       crowns: 2437,
@@ -26,7 +26,8 @@ export default function usePopularPosts() {
     },
     {
       id: 1,
-      format: 'photo',
+      format: FILE_TYPES.IMAGE,
+
       title: 'oh shit',
       url: 'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/memes%2FAye%20this%20is%20the%20first%20check?alt=media&token=c33390b8-2dfc-4e33-9495-daaebc6c645e',
       crowns: 320009,
@@ -36,7 +37,8 @@ export default function usePopularPosts() {
     },
     {
       id: 2,
-      format: 'photo',
+      format: FILE_TYPES.IMAGE,
+
       url: 'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/memes%2FNeil%20is%20making%20moves%20?alt=media&token=18e52de5-55de-4b70-8bf4-a93bf03b4eb7',
       crowns: 12000,
       comments: 100,

@@ -226,7 +226,7 @@ export default function MyStack() {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false, animation: 'slide_from_bottom'}}>
-      <Stack.Screen name="Home" component={Memesfr} />
+      <Stack.Screen name="HomeScreen" component={Memesfr} />
       <Stack.Screen name="UploadScreen" component={Upload} />
     </Stack.Navigator>
   );

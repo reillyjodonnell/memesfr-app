@@ -24,7 +24,7 @@ import UserAvatar from './user-avatar';
 import {callWithHapticFeedback} from '../helpers/haptics';
 import CreateComment from './create-comment';
 import {Image} from 'expo-image';
-import {FILE_TYPE} from '../constants';
+import {FILE_TYPES} from '../constants';
 
 export default function Card({
   id,
@@ -305,11 +305,7 @@ type MemeProps = {
 };
 
 function Meme({format, url}: MemeProps) {
-  console.log(format);
-
-  console.log(format === FILE_TYPE.IMAGE);
-  console.log(url);
-  return format === FILE_TYPE.IMAGE ? (
+  return format === FILE_TYPES.IMAGE ? (
     <Image
       style={{
         height: '100%',
@@ -320,7 +316,7 @@ function Meme({format, url}: MemeProps) {
       }}
       source={{uri: url}}
     />
-  ) : format === FILE_TYPE.VIDEO ? (
+  ) : format === FILE_TYPES.VIDEO ? (
     <Video
       isLooping
       shouldPlay

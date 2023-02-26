@@ -37,6 +37,12 @@ export const colors = {
   transparent: '#ffffff00',
   semiTransparent: '#ffffff12',
 
+  border: {
+    thin: 1,
+    regular: 2,
+    thick: 3,
+  },
+
   spacing: {
     xs: 4,
     s: 8,
@@ -69,6 +75,7 @@ export const colors = {
   fontMd: 16,
   fontLg: 20,
   fontXL: 25,
+  fontXXL: 30,
 
   // calcs
   topbarHeight: 40,
