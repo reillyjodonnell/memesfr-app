@@ -19,25 +19,21 @@ import Trash from '../assets/trash.svg';
 import Photo from '../assets/photo.svg';
 import {Image} from 'expo-image';
 import {callWithHapticFeedback} from '../helpers/haptics';
-import useCamera from '../custom-hooks/use-camera';
 import usePhotos from '../custom-hooks/use-photos';
 
 export default function Upload({navigation}: {navigation: any}) {
   const {height, width} = useWindowDimensions();
   const [postTitle, setPostTitle] = useState('');
+  const [selected, setSelected] = useState(false);
 
   const {
-    cameraImage,
-    clearCameraImage,
+    photo,
+    clearPhoto,
+    promptUserToAllowAccessToPhotos,
+    handleOpenPhotos,
     promptUserToAllowAccessToCamera,
     handleOpenCamera,
-  } = useCamera();
-  const {photo, clearPhoto, promptUserToAllowAccessToPhotos, handleOpenPhotos} =
-    usePhotos();
-
-  const image = cameraImage || photo;
-
-  const clearImage = cameraImage ? clearCameraImage : clearPhoto;
+  } = usePhotos();
 
   if (promptUserToAllowAccessToCamera || promptUserToAllowAccessToPhotos) {
     return (
@@ -98,7 +94,7 @@ export default function Upload({navigation}: {navigation: any}) {
 
   return (
     <UploadUIWrapper navigation={navigation}>
-      {image ? (
+      {photo ? (
         <>
           <View
             style={{
@@ -172,10 +168,11 @@ export default function Upload({navigation}: {navigation: any}) {
               borderColor: colors.line,
             }}>
             <Image
-              source={{uri: image}}
+              source={{uri: photo}}
               resizeMode="contain"
               style={{width: '100%', height: '100%'}}
             />
+
             <TouchableOpacity
               style={{
                 position: 'absolute',
@@ -185,7 +182,7 @@ export default function Upload({navigation}: {navigation: any}) {
                 top: 0,
                 right: 0,
               }}
-              onPress={clearImage}>
+              onPress={clearPhoto}>
               <Trash
                 stroke={colors.textPrimary}
                 width={colors.iconWidth}
@@ -213,7 +210,7 @@ export default function Upload({navigation}: {navigation: any}) {
                 marginLeft: colors.spacing.l,
                 marginRight: colors.spacing.l / 2,
               }}
-              onPress={clearImage}>
+              onPress={clearPhoto}>
               <Text
                 style={{
                   color: colors.textPrimary,
@@ -237,7 +234,6 @@ export default function Upload({navigation}: {navigation: any}) {
                 alignItems: 'center',
                 paddingVertical: colors.spacing.s + 4,
                 marginRight: colors.spacing.l,
-                marginRight: colors.spacing.l / 2,
               }}
               onPress={() => callWithHapticFeedback(() => {})}>
               <Text
@@ -286,7 +282,10 @@ export default function Upload({navigation}: {navigation: any}) {
               alignItems: 'center',
               marginTop: colors.spacing.m,
             }}
-            onPress={() => callWithHapticFeedback(handleOpenCamera)}>
+            onPress={() => {
+              handleOpenCamera();
+              setSelected(true);
+            }}>
             <Text
               style={{
                 color: colors.textPrimary,
@@ -313,7 +312,10 @@ export default function Upload({navigation}: {navigation: any}) {
               alignItems: 'center',
               marginTop: colors.spacing.m,
             }}
-            onPress={() => callWithHapticFeedback(handleOpenPhotos)}>
+            onPress={() => {
+              handleOpenPhotos();
+              setSelected(true);
+            }}>
             <Text
               style={{
                 color: colors.textPrimary,
