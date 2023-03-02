@@ -1,3 +1,19 @@
+## Installation
+
+iOS
+`yarn`
+Install pods
+
+```
+cd ios
+npx pod-install
+cd ../
+```
+
+`yarn ios` to run ios simulator
+
+Android
+
 ### Errors:
 
 Problem:

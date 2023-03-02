@@ -25,6 +25,7 @@ import {callWithHapticFeedback} from '../helpers/haptics';
 import CreateComment from './create-comment';
 import {Image} from 'expo-image';
 import {FILE_TYPES} from '../constants';
+import {useBottomSheetModal} from '@gorhom/bottom-sheet';
 
 export default function Card({
   id,
@@ -35,8 +36,10 @@ export default function Card({
   comments,
   shares,
   title,
+  active,
 }: any) {
   const {width: windowWidth, height: windowHeight} = useWindowDimensions();
+  const {dismiss} = useBottomSheetModal();
 
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -51,48 +54,53 @@ export default function Card({
   }, []);
 
   return (
-    <View
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        height: windowHeight * 0.75,
-        width: windowWidth,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.line,
-        marginBottom: colors.spacing.m,
-        position: 'relative',
-      }}>
-      <BottomSheetModal
-        handleIndicatorStyle={{
-          borderColor: colors.textSecondary,
-          borderWidth: 2,
-        }}
-        backgroundStyle={{
-          backgroundColor: colors.bg,
-        }}
-        ref={bottomSheetModalRef}
-        snapPoints={['75%']}
-        onChange={handleSheetChanges}>
-        <Comments />
-        <CreateComment uploadComment={() => {}} />
-      </BottomSheetModal>
-      <AuthorAndTitleSection title={title} username={username} />
+    <TouchableWithoutFeedback
+      style={{zIndex: 10000}}
+      onPress={bottomSheetModalRef.current ? () => dismiss() : () => {}}>
       <View
         style={{
-          flex: 1,
-          paddingVertical: colors.spacing.l,
-          backgroundColor: colors.transparent,
+          display: 'flex',
+          justifyContent: 'center',
+          height: windowHeight * 0.75,
+          width: windowWidth,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.line,
+          marginBottom: colors.spacing.m,
+          position: 'relative',
         }}>
-        <Meme url={url} format={format} />
-        <Interactions
-          openComments={openComments}
-          crowns={crowns}
-          comments={comments}
-          shares={shares}
-        />
-        {/* <LongPressCornerButton /> */}
+        <BottomSheetModal
+          stackBehavior="push"
+          handleIndicatorStyle={{
+            borderColor: colors.textSecondary,
+            borderWidth: 2,
+          }}
+          backgroundStyle={{
+            backgroundColor: colors.bg,
+          }}
+          ref={bottomSheetModalRef}
+          snapPoints={['75%']}
+          onChange={handleSheetChanges}>
+          <Comments />
+          <CreateComment uploadComment={() => {}} />
+        </BottomSheetModal>
+        <AuthorAndTitleSection title={title} username={username} />
+        <View
+          style={{
+            flex: 1,
+            paddingVertical: colors.spacing.l,
+            backgroundColor: colors.transparent,
+          }}>
+          <Meme active={active} url={url} format={format} />
+          <Interactions
+            openComments={openComments}
+            crowns={crowns}
+            comments={comments}
+            shares={shares}
+          />
+          {/* <LongPressCornerButton /> */}
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -302,9 +310,10 @@ function Interactions({
 type MemeProps = {
   format: any;
   url: string;
+  active: boolean;
 };
 
-function Meme({format, url}: MemeProps) {
+function Meme({format, url, active}: MemeProps) {
   return format === FILE_TYPES.IMAGE ? (
     <Image
       style={{
@@ -318,8 +327,9 @@ function Meme({format, url}: MemeProps) {
     />
   ) : format === FILE_TYPES.VIDEO ? (
     <Video
-      isLooping
-      shouldPlay
+      isLooping={active}
+      shouldPlay={active}
+      isMuted={!active}
       useNativeControls
       style={{
         height: '100%',

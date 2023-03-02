@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React, {useState, Suspense, useRef} from 'react';
 import type {Post} from '../custom-hooks/use-popular-posts';
 import {useWindowDimensions, View, Text} from 'react-native';
 import {colors} from '../theme';
@@ -8,8 +8,14 @@ import {FlashList} from '@shopify/flash-list';
 type PopularProps = {
   posts: Post[];
 };
+
 export default function MemeDisplay({posts}: PopularProps) {
+  const [activeIndex, setActiveIndex] = useState(-1);
   const {_, height} = useWindowDimensions();
+
+  const fetchMore = () => {
+    console.log('fetching more');
+  };
 
   if (!posts || posts.length === 0) {
     return null;
@@ -22,6 +28,7 @@ export default function MemeDisplay({posts}: PopularProps) {
       }>
       <View style={{flex: 1, backgroundColor: colors.bg}}>
         <FlashList
+          onEndReached={fetchMore}
           pagingEnabled={true}
           snapToInterval={height * 0.77}
           snapToAlignment={'center'}
@@ -29,11 +36,15 @@ export default function MemeDisplay({posts}: PopularProps) {
           contentContainerStyle={{backgroundColor: colors.bg}}
           data={posts}
           estimatedItemSize={200}
-          renderItem={({item}: {item: Post}) => {
+          viewabilityConfigCallbackPairs={
+            viewabilityConfigCallbackPairs.current
+          }
+          renderItem={({item, index}: {item: Post; index: number}) => {
             const {id, title, creator, crowns, comments, shares, format, url} =
               item;
             return (
               <Card
+                active={index === activeIndex}
                 id={id}
                 title={title}
                 username={creator}
