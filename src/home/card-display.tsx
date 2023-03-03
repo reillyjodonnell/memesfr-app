@@ -1,4 +1,4 @@
-import React, {useState, Suspense, useRef} from 'react';
+import React, {useState, Suspense} from 'react';
 import type {Post} from '../custom-hooks/use-popular-posts';
 import {useWindowDimensions, View, Text} from 'react-native';
 import {colors} from '../theme';
@@ -9,7 +9,7 @@ type PopularProps = {
   posts: Post[];
 };
 
-export default function MemeDisplay({posts}: PopularProps) {
+export default function CardDisplay({posts}: PopularProps) {
   const [activeIndex, setActiveIndex] = useState(-1);
   const {_, height} = useWindowDimensions();
 
@@ -36,9 +36,6 @@ export default function MemeDisplay({posts}: PopularProps) {
           contentContainerStyle={{backgroundColor: colors.bg}}
           data={posts}
           estimatedItemSize={200}
-          viewabilityConfigCallbackPairs={
-            viewabilityConfigCallbackPairs.current
-          }
           renderItem={({item, index}: {item: Post; index: number}) => {
             const {id, title, creator, crowns, comments, shares, format, url} =
               item;

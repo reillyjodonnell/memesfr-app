@@ -7,14 +7,15 @@ import {
   Animated,
   TouchableWithoutFeedback,
   StyleSheet,
+  Modal,
+  TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import Verified from '../assets/verified.svg';
 import {colors} from '../theme';
 import Crown from '../assets/crown.svg';
 import Share from '../assets/share.svg';
 import ChatBubble from '../assets/chat-bubble.svg';
-import Cancel from '../assets/cancel.svg';
-import Fingerprint from '../assets/finger.svg';
 import HapticFeedback from 'react-native-haptic-feedback';
 import {Video} from 'expo-av';
 import {formatNumber} from '../helpers/formatters';
@@ -38,6 +39,7 @@ export default function Card({
   title,
   active,
 }: any) {
+  const [showShareModal, setShowShareModal] = useState(false);
   const {width: windowWidth, height: windowHeight} = useWindowDimensions();
   const {dismiss} = useBottomSheetModal();
 
@@ -52,6 +54,10 @@ export default function Card({
   const openComments = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
+  const openShare = () => {
+    setShowShareModal(true);
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -68,6 +74,10 @@ export default function Card({
           marginBottom: colors.spacing.m,
           position: 'relative',
         }}>
+        <ShareModal
+          showShareModal={showShareModal}
+          setShowShareModal={setShowShareModal}
+        />
         <BottomSheetModal
           stackBehavior="push"
           handleIndicatorStyle={{
@@ -92,6 +102,7 @@ export default function Card({
           }}>
           <Meme active={active} url={url} format={format} />
           <Interactions
+            openShare={openShare}
             openComments={openComments}
             crowns={crowns}
             comments={comments}
@@ -162,11 +173,13 @@ function Interactions({
   comments = 0,
   shares = 0,
   openComments,
+  openShare,
 }: {
   crowns: number;
   comments: number;
   shares: number;
   openComments: Function;
+  openShare: Function;
 }) {
   const [active, setActive] = useState(false);
   // Initial scale value of 1 means no scale applied initially.
@@ -290,7 +303,7 @@ function Interactions({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <LongPressButton>
+          <LongPressButton onPress={openShare}>
             <Share
               stroke={'white'}
               width={colors.iconWidth}
@@ -344,7 +357,7 @@ function Meme({format, url, active}: MemeProps) {
   ) : null;
 }
 
-function LongPressButton({children, active, onPress}: any) {
+function LongPressButton({children, active, onPress = () => {}}: any) {
   const handleLongPress = useCallback(() => {
     HapticFeedback.trigger('impactMedium');
   }, []);
@@ -374,89 +387,95 @@ function LongPressButton({children, active, onPress}: any) {
   );
 }
 
-function LongPressCornerButton({handleLongPress, opened}: any) {
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        // backgroundColor: opened ? 'rgba(0,0,0,.85)' : null,
-      }}>
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          right: 10,
-          width: 120,
-          height: 150,
-        }}>
-        <MemeInteractionSelection />
-      </View>
-    </View>
-  );
-}
-const MemeInteractionSelection = () => {
-  const [showInteractionIcons, setShowInteractionIcons] = useState(false);
+//
 
-  function handleLongPress() {
-    setShowInteractionIcons(prev => !prev);
+function ShareModal({
+  setShowShareModal,
+  showShareModal,
+}: {
+  setShowShareModal: Function;
+  showShareModal: boolean;
+}) {
+  function closeModal() {
+    setShowShareModal(false);
   }
   return (
-    <View style={{position: 'relative', flex: 1}}>
-      {showInteractionIcons ? (
-        <>
-          <View style={{position: 'absolute', top: '30%', right: 0}}>
-            <LongPressButton>
-              <Crown
-                fill={'white'}
-                width={colors.iconWidth}
-                height={colors.iconHeight}
-              />
-            </LongPressButton>
+    <Modal
+      style={{flex: 1}}
+      animationType="slide"
+      transparent={true}
+      visible={showShareModal}
+      onRequestClose={() => {
+        closeModal();
+      }}>
+      <TouchableOpacity onPress={closeModal} style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>
+          <View
+            style={{
+              height: '35%',
+              marginTop: 'auto',
+            }}>
+            <View
+              style={{
+                padding: colors.spacing.l,
+                backgroundColor: colors.bg,
+                borderWidth: 2,
+                borderColor: colors.line,
+                width: '100%',
+                height: '100%',
+                borderRadius: colors.rounded,
+              }}>
+              <View
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: colors.spacing.m,
+                  }}>
+                  <View
+                    style={{
+                      height: colors.iconHeight,
+                      width: colors.iconWidth,
+                      borderWidth: 2,
+                      borderRadius: 10000,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: 20,
+                      backgroundColor: colors.accent,
+                      marginHorizontal: colors.spacing.m,
+                    }}>
+                    <ChatBubble stroke={colors.textPrimary} />
+                  </View>
+
+                  <View style={{display: 'flex'}}>
+                    <Text
+                      style={{
+                        color: colors.textPrimary,
+                        fontWeight: colors.fontBold,
+                        fontSize: colors.fontLg,
+                      }}>
+                      Header
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.textPrimary,
+                        fontWeight: colors.fontSemiBold,
+                      }}>
+                      This is the subtext. the user is prompted here!
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
-          <View style={{position: 'absolute', bottom: '50%', left: '37%'}}>
-            <LongPressButton>
-              <ChatBubble
-                stroke={'white'}
-                width={colors.iconWidth}
-                height={colors.iconHeight}
-              />
-            </LongPressButton>
-          </View>
-          <View style={{position: 'absolute', bottom: 0, left: '10%'}}>
-            <LongPressButton>
-              <Share
-                stroke={'white'}
-                width={colors.iconWidth}
-                height={colors.iconHeight}
-              />
-            </LongPressButton>
-          </View>
-        </>
-      ) : null}
-      <Pressable
-        style={{
-          borderWidth: 2,
-          borderColor: 'white',
-          borderRadius: 100,
-          padding: 20,
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          transform: [{scale: showInteractionIcons ? 0.8 : 1}],
-        }}
-        onLongPress={handleLongPress}>
-        {showInteractionIcons ? (
-          <Cancel width={colors.iconWidth} height={colors.iconHeight} />
-        ) : (
-          <Fingerprint
-            stroke={'white'}
-            width={colors.iconWidth}
-            height={colors.iconHeight}
-          />
-        )}
-      </Pressable>
-    </View>
+        </SafeAreaView>
+      </TouchableOpacity>
+    </Modal>
   );
-};
+}
