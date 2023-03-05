@@ -25,7 +25,6 @@ const palette = {
 export const colors = {
   // colors
   bg: palette.black,
-  bg2: '#272932' as Color,
   textPrimary: palette.white,
   textSecondary: '#ffffffab' as Color,
   accentBg: palette.purple,

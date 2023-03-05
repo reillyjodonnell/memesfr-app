@@ -15,6 +15,8 @@ import Verified from '../assets/verified.svg';
 import {colors} from '../theme';
 import Crown from '../assets/crown.svg';
 import Share from '../assets/share.svg';
+import Copy from '../assets/copy.svg';
+import Send from '../assets/send.svg';
 import ChatBubble from '../assets/chat-bubble.svg';
 import HapticFeedback from 'react-native-haptic-feedback';
 import {Video} from 'expo-av';
@@ -408,7 +410,7 @@ function ShareModal({
       onRequestClose={() => {
         closeModal();
       }}>
-      <TouchableOpacity onPress={closeModal} style={{flex: 1}}>
+      <Pressable style={{flex: 1}} onPress={closeModal}>
         <SafeAreaView style={{flex: 1}}>
           <View
             style={{
@@ -417,65 +419,100 @@ function ShareModal({
             }}>
             <View
               style={{
-                padding: colors.spacing.l,
+                // padding: colors.spacing.m,
+                paddingRight: colors.spacing.m,
                 backgroundColor: colors.bg,
                 borderWidth: 2,
                 borderColor: colors.line,
                 width: '100%',
                 height: '100%',
                 borderRadius: colors.rounded,
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
               }}>
-              <View
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    paddingVertical: colors.spacing.m,
-                  }}>
-                  <View
-                    style={{
-                      height: colors.iconHeight,
-                      width: colors.iconWidth,
-                      borderWidth: 2,
-                      borderRadius: 10000,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      padding: 20,
-                      backgroundColor: colors.accent,
-                      marginHorizontal: colors.spacing.m,
-                    }}>
-                    <ChatBubble stroke={colors.textPrimary} />
-                  </View>
-
-                  <View style={{display: 'flex'}}>
-                    <Text
-                      style={{
-                        color: colors.textPrimary,
-                        fontWeight: colors.fontBold,
-                        fontSize: colors.fontLg,
-                      }}>
-                      Header
-                    </Text>
-                    <Text
-                      style={{
-                        color: colors.textPrimary,
-                        fontWeight: colors.fontSemiBold,
-                      }}>
-                      This is the subtext. the user is prompted here!
-                    </Text>
-                  </View>
-                </View>
-              </View>
+              <ShareModalItem
+                icon={<ChatBubble color={colors.textPrimary} />}
+                header={'Text'}
+                text="Text this dank meme to a friend!"
+              />
+              <ShareModalItem
+                icon={<Copy color={colors.textPrimary} />}
+                header={'Copy'}
+                text="Copy this dank meme!"
+              />
+              <ShareModalItem
+                icon={<Send color={colors.textPrimary} />}
+                header={'Send'}
+                text="Send this dank meme to a friend!"
+              />
             </View>
           </View>
         </SafeAreaView>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
+  );
+}
+
+function ShareModalItem({
+  icon,
+  header,
+  text,
+}: {
+  icon: any;
+  header: string;
+  text: string;
+}) {
+  return (
+    <View
+      style={{
+        display: 'flex',
+        width: '100%',
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingVertical: colors.spacing.m,
+        }}>
+        <View
+          style={{
+            height: colors.iconHeight,
+            width: colors.iconWidth,
+            borderColor: colors.accent,
+            borderWidth: 2,
+            borderRadius: 10000,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.accent,
+            padding: 18,
+            marginHorizontal: colors.spacing.m,
+          }}>
+          {icon}
+        </View>
+
+        <View
+          style={{
+            flex: 1,
+          }}>
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontWeight: colors.fontBold,
+              fontSize: colors.fontLg,
+            }}>
+            {header}
+          </Text>
+          <Text
+            style={{
+              color: colors.textSecondary,
+              fontWeight: colors.fontSemiBold,
+              fontSize: colors.fontSm,
+            }}>
+            {text}
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 }
