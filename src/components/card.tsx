@@ -4,7 +4,6 @@ import {
   Text,
   useWindowDimensions,
   Pressable,
-  Animated,
   TouchableWithoutFeedback,
   StyleSheet,
   Modal,
@@ -17,8 +16,8 @@ import Crown from '../assets/crown.svg';
 import Share from '../assets/share.svg';
 import Copy from '../assets/copy.svg';
 import Send from '../assets/send.svg';
+import Play from '../assets/play.svg';
 import ChatBubble from '../assets/chat-bubble.svg';
-import HapticFeedback from 'react-native-haptic-feedback';
 import {Video} from 'expo-av';
 import {formatNumber} from '../helpers/formatters';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
@@ -29,6 +28,7 @@ import CreateComment from './create-comment';
 import {Image} from 'expo-image';
 import {FILE_TYPES} from '../constants';
 import {useBottomSheetModal} from '@gorhom/bottom-sheet';
+import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 
 export default function Card({
   id,
@@ -329,6 +329,8 @@ type MemeProps = {
 };
 
 function Meme({format, url, active}: MemeProps) {
+  const [pause, setPause] = useState(true);
+
   return format === FILE_TYPES.IMAGE ? (
     <Image
       style={{
@@ -341,29 +343,55 @@ function Meme({format, url, active}: MemeProps) {
       source={{uri: url}}
     />
   ) : format === FILE_TYPES.VIDEO ? (
-    <Video
-      isLooping={active}
-      shouldPlay={active}
-      isMuted={!active}
-      useNativeControls
+    <Pressable
+      onPress={() => setPause(prev => !prev)}
       style={{
         height: '100%',
         width: '100%',
         backgroundColor: colors.accent,
-        // resizeMode: 'contain',
-      }}
-      source={{
-        uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-      }}
-    />
+        position: 'relative',
+      }}>
+      <View
+        style={{
+          position: 'absolute',
+          zIndex: 2,
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: pause ? colors.semiTransparent : 'transparent',
+        }}>
+        {pause ? (
+          <Animated.View exiting={FadeOut} entering={FadeIn}>
+            <Play
+              width={colors.iconWidth + 10}
+              height={colors.iconHeight + 10}
+              stroke={colors.textPrimary}
+            />
+          </Animated.View>
+        ) : null}
+      </View>
+
+      <Video
+        isLooping={!pause}
+        shouldPlay={!pause}
+        isMuted={!active}
+        style={{
+          height: '100%',
+          width: '100%',
+          backgroundColor: colors.accent,
+          // resizeMode: 'contain',
+        }}
+        source={{
+          uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        }}
+      />
+    </Pressable>
   ) : null;
 }
 
 function LongPressButton({children, active, onPress = () => {}}: any) {
-  const handleLongPress = useCallback(() => {
-    HapticFeedback.trigger('impactMedium');
-  }, []);
-
   return (
     <Pressable
       onPress={() => callWithHapticFeedback(onPress)}
@@ -382,14 +410,11 @@ function LongPressButton({children, active, onPress = () => {}}: any) {
         shadowOpacity: 1,
         shadowRadius: 12,
         elevation: 13,
-      }}
-      onHoverIn={handleLongPress}>
+      }}>
       {children}
     </Pressable>
   );
 }
-
-//
 
 function ShareModal({
   setShowShareModal,
