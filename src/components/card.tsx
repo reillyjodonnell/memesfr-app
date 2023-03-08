@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Modal,
-  TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 import Verified from '../assets/verified.svg';
@@ -29,6 +28,19 @@ import {Image} from 'expo-image';
 import {FILE_TYPES} from '../constants';
 import {useBottomSheetModal} from '@gorhom/bottom-sheet';
 import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+
+type CardProps = {
+  id: number;
+  url: string;
+  username: string;
+  format: string;
+  crowns: number;
+  comments: number;
+  shares: number;
+  title: string;
+  active?: boolean;
+};
 
 export default function Card({
   id,
@@ -39,8 +51,9 @@ export default function Card({
   comments,
   shares,
   title,
-  active,
-}: any) {
+  active = false,
+}: CardProps) {
+  const lastItemId = useRef(id);
   const [showShareModal, setShowShareModal] = useState(false);
   const {width: windowWidth, height: windowHeight} = useWindowDimensions();
   const {dismiss} = useBottomSheetModal();
@@ -56,6 +69,10 @@ export default function Card({
   const openComments = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
+  const closeComments = () => {
+    bottomSheetModalRef.current?.dismiss();
+  };
 
   const openShare = () => {
     setShowShareModal(true);
@@ -80,21 +97,11 @@ export default function Card({
           showShareModal={showShareModal}
           setShowShareModal={setShowShareModal}
         />
-        <BottomSheetModal
-          stackBehavior="push"
-          handleIndicatorStyle={{
-            borderColor: colors.textSecondary,
-            borderWidth: 2,
-          }}
-          backgroundStyle={{
-            backgroundColor: colors.bg,
-          }}
-          ref={bottomSheetModalRef}
-          snapPoints={['75%']}
-          onChange={handleSheetChanges}>
-          <Comments />
-          <CreateComment uploadComment={() => {}} />
-        </BottomSheetModal>
+        <CommentModal
+          bottomSheetModalRef={bottomSheetModalRef}
+          handleSheetChanges={handleSheetChanges}
+        />
+
         <AuthorAndTitleSection title={title} username={username} />
         <View
           style={{
@@ -183,56 +190,6 @@ function Interactions({
   openComments: Function;
   openShare: Function;
 }) {
-  const [active, setActive] = useState(false);
-  // Initial scale value of 1 means no scale applied initially.
-  const animatedValue = new Animated.Value(1);
-
-  // When button is pressed in, animate the scale to 1.5
-  const onPressIn = () => {
-    Animated.spring(animatedValue, {
-      toValue: 1.5,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  console.log(animatedValue);
-
-  // When button is pressed out, animate the scale back to 1
-  const onPressOut = () => {
-    Animated.spring(animatedValue, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const interpolateColor = animatedValue.interpolate({
-    inputRange: [1, 1.5],
-    outputRange: [colors.line, colors.accentHighlight],
-  });
-
-  // The animated style for scaling the button within the Animated.View
-  const animatedStyle = {
-    transform: [{scale: animatedValue}],
-  };
-
-  const styles = StyleSheet.create({
-    icon: {
-      borderWidth: 2,
-      marginVertical: 10,
-      borderColor: active ? colors.accentHighlight : colors.line,
-      borderRadius: 100,
-      padding: 10,
-      backgroundColor: active ? colors.accentHighlight : colors.line,
-      shadowColor: colors.accent,
-      shadowOffset: {
-        width: 0,
-        height: 6,
-      },
-      shadowOpacity: 1,
-      shadowRadius: 12,
-      elevation: 13,
-    },
-  });
   return (
     <View
       style={{
@@ -258,17 +215,6 @@ function Interactions({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <TouchableWithoutFeedback
-            onPressIn={onPressIn}
-            onPressOut={onPressOut}>
-            <Animated.View style={[styles.icon, animatedStyle]}>
-              <Crown
-                fill={'white'}
-                width={colors.iconWidth}
-                height={colors.iconHeight}
-              />
-            </Animated.View>
-          </TouchableWithoutFeedback>
           <LongPressButton active={true}>
             <Crown
               fill={'white'}
@@ -329,7 +275,7 @@ type MemeProps = {
 };
 
 function Meme({format, url, active}: MemeProps) {
-  const [pause, setPause] = useState(true);
+  const [pause, setPause] = useState(false);
 
   return format === FILE_TYPES.IMAGE ? (
     <Image
@@ -348,7 +294,7 @@ function Meme({format, url, active}: MemeProps) {
       style={{
         height: '100%',
         width: '100%',
-        backgroundColor: colors.accent,
+        backgroundColor: colors.bg,
         position: 'relative',
       }}>
       <View
@@ -380,7 +326,6 @@ function Meme({format, url, active}: MemeProps) {
         style={{
           height: '100%',
           width: '100%',
-          backgroundColor: colors.accent,
           // resizeMode: 'contain',
         }}
         source={{
@@ -539,5 +484,31 @@ function ShareModalItem({
         </View>
       </View>
     </View>
+  );
+}
+
+function CommentModal({
+  bottomSheetModalRef,
+  handleSheetChanges,
+}: {
+  bottomSheetModalRef: any;
+  handleSheetChanges: Function;
+}) {
+  return (
+    <BottomSheetModal
+      stackBehavior="push"
+      handleIndicatorStyle={{
+        borderColor: colors.textSecondary,
+        borderWidth: 2,
+      }}
+      backgroundStyle={{
+        backgroundColor: colors.bg,
+      }}
+      ref={bottomSheetModalRef}
+      snapPoints={['75%']}
+      onChange={handleSheetChanges}>
+      <Comments />
+      <CreateComment uploadComment={() => {}} />
+    </BottomSheetModal>
   );
 }

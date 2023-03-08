@@ -21,6 +21,10 @@ export default function CardDisplay({posts}: PopularProps) {
     return null;
   }
 
+  const changed = (data: any) => {
+    console.log(data);
+  };
+
   return (
     <Suspense
       fallback={
@@ -34,9 +38,11 @@ export default function CardDisplay({posts}: PopularProps) {
           snapToAlignment={'center'}
           decelerationRate={0}
           contentContainerStyle={{backgroundColor: colors.bg}}
+          onViewableItemsChanged={data => changed(data)}
           data={posts}
           estimatedItemSize={200}
           renderItem={({item, index}: {item: Post; index: number}) => {
+            console.log(index);
             const {id, title, creator, crowns, comments, shares, format, url} =
               item;
             return (
