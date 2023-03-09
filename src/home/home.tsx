@@ -5,11 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {View, Text, Pressable} from 'react-native';
 import {colors} from '../theme';
-import Topbar from '../components/topbar';
-import LeftArrow from '../assets/left-arrow.svg';
 import Castle from '../assets/castle.svg';
-
-const Stack = createNativeStackNavigator();
 
 const Tab = createMaterialTopTabNavigator();
 

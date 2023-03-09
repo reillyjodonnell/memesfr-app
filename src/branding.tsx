@@ -12,7 +12,6 @@ const iconMap = {
 };
 
 export const Branding = props => {
-  console.log(props);
   const routes = props?.state?.routes;
   return (
     <View style={styles.logoContainer}>
