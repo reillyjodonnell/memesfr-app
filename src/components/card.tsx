@@ -143,7 +143,11 @@ function AuthorAndTitleSection({
         paddingHorizontal: colors.spacing.m,
         zIndex: 2,
       }}>
-      <View style={{height: colors.avatarHeight, width: colors.avatarWidth}}>
+      <View
+        style={{
+          height: colors.avatarHeight,
+          width: colors.avatarWidth,
+        }}>
         <UserAvatar />
       </View>
       <View>

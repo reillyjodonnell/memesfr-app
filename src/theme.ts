@@ -83,6 +83,12 @@ export const colors = {
   interactionHeight: 340,
   interactionWidth: 80,
 
+  avatar: {
+    s: 40,
+    m: 50,
+    l: 60,
+  },
+
   avatarWidth: 50,
   avatarHeight: 50,
 };
