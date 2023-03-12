@@ -1,13 +1,44 @@
 import {Image} from 'expo-image';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Button, Pressable, Text, View} from 'react-native';
 import {Branding} from '../branding';
 import UserAvatar from '../components/user-avatar';
 import {colors} from '../theme';
 import useNotifications from './use-notifications';
+import Settings from '../assets/settings.svg';
+import {createStackNavigator} from '@react-navigation/stack';
+import {useNavigation} from '@react-navigation/native';
 
-export default function Notifications() {
+const Stack = createStackNavigator();
+
+export default function NotificationWrapper() {
+  return (
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="NotificationComponent">
+      <Stack.Screen name="NotificationComponent" component={Notifications} />
+      <Stack.Screen
+        name="NotificationSettings"
+        component={NotificationSettings}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function NotificationSettings() {
+  const navigation = useNavigation();
+
+  return (
+    <View>
+      <Text>Notification Settings</Text>
+      <Button onPress={() => navigation.goBack()} title="Go back" />
+    </View>
+  );
+}
+
+export function Notifications() {
   const {notifications} = useNotifications();
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -24,7 +55,17 @@ export default function Notifications() {
           width: '100%',
           marginBottom: colors.spacing.m,
         }}>
-        <Branding>
+        <Branding
+          rightContainer={
+            <Pressable
+              onPress={() => navigation.navigate('NotificationSettings')}>
+              <Settings
+                width={colors.iconWidth}
+                height={colors.iconHeight}
+                color={colors.textSecondary}
+              />
+            </Pressable>
+          }>
           <Text
             style={{
               color: colors.textPrimary,
