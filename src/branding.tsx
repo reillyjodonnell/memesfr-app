@@ -5,9 +5,13 @@ import {colors} from './theme';
 
 export const Branding = ({
   rightContainer,
+  leftContainer = (
+    <Castle height={colors.logoHeight} width={colors.logoWidth} />
+  ),
   children,
 }: {
-  rightContainer: JSX.Element;
+  rightContainer?: JSX.Element;
+  leftContainer?: JSX.Element;
   children: JSX.Element;
 }) => {
   return (
@@ -16,7 +20,7 @@ export const Branding = ({
         style={{
           marginRight: 'auto',
         }}>
-        <Castle height={colors.logoHeight} width={colors.logoWidth} />
+        {leftContainer}
       </Pressable>
       <View
         style={{
