@@ -8,6 +8,7 @@ import Post from './assets/post.svg';
 import Message from './assets/message.svg';
 import User from './assets/user.svg';
 import HomeScreen from './home/home';
+import MessageScreen from './messages/messages';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import NotificationScreen from './notifications/notifications';
 import Profile from './profile/profile';
@@ -176,7 +177,7 @@ function Memesfr() {
                 </>
               ),
             }}
-            component={Message}
+            component={MessageScreen}
             name="Messages"
           />
           <Tab.Screen
