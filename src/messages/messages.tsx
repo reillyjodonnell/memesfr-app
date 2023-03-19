@@ -1,13 +1,17 @@
 import React, {useState} from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {View, Text} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import {colors} from '../theme';
-import Castle from '../assets/castle.svg';
 import UserAvatar from '../components/user-avatar';
+import {createStackNavigator} from '@react-navigation/stack';
+import {useNavigation} from '@react-navigation/native';
+import ArrowLeft from '../assets/arrow-left.svg';
+import {Branding} from '../branding';
 
-const Tab = createMaterialTopTabNavigator();
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-export const useMessages = () => {
+const Stack = createStackNavigator();
+
+export const useMessagePreviews = () => {
   const yesterday = new Date();
   const today = new Date();
   today.setHours(14);
@@ -40,7 +44,8 @@ export const useMessages = () => {
     },
     {
       id: 2,
-      message: 'Here is another message',
+      message:
+        'Here is another message. Hwoever, its a bit longer! We are testing the maximum number of characters that this can handle!',
       senderName: 'Rach2',
       senderAvatar:
         'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/users%2FnXFuyvfojfNlpUrpQhpFHoAo9zV2?alt=media&token=ca4e01a9-c626-4794-8243-fada79fba707',
@@ -51,8 +56,38 @@ export const useMessages = () => {
   return {messagePreview};
 };
 
-export default function MessageScreen({}: any) {
-  const {messagePreview} = useMessages();
+// These types need to be updated
+type RootStackParamList = {
+  MessagePreview: {username: string};
+  MessageUser: {username: string};
+};
+
+type MessageUserProps = NativeStackScreenProps<
+  RootStackParamList,
+  'MessageUser'
+>;
+type MessagePreviewProps = NativeStackScreenProps<
+  RootStackParamList,
+  'MessagePreview'
+>;
+
+export default function MessageWrapper() {
+  return (
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="MessagePreview">
+      <Stack.Screen name="MessagePreview" component={MessagePreview} />
+      <Stack.Screen
+        name="MessageUser"
+        initialParams={{user: 'reilly'}}
+        component={MessageUser}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function MessagePreview() {
+  const {messagePreview} = useMessagePreviews();
   return (
     <View
       style={{
@@ -89,7 +124,7 @@ export default function MessageScreen({}: any) {
             timeSent,
           }) => {
             return (
-              <MessagePreview
+              <MessagePreviewHighlight
                 senderAvatar={senderAvatar}
                 senderName={senderName}
                 key={id}
@@ -142,7 +177,7 @@ export default function MessageScreen({}: any) {
   );
 }
 
-function MessagePreview({
+function MessagePreviewHighlight({
   message,
   senderName,
   senderAvatar,
@@ -151,57 +186,112 @@ function MessagePreview({
   senderName: string;
   senderAvatar: string;
 }) {
+  const navigation = useNavigation();
+
   return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginVertical: colors.spacing.m,
-        width: '100%',
-        backgroundColor: colors.accent,
-      }}>
+    <Pressable onPress={() => navigation.navigate('MessageUser')}>
       <View
         style={{
-          width: colors.avatarWidth,
-          height: colors.avatarHeight,
-          marginRight: colors.spacing.s,
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          marginVertical: colors.spacing.m,
+          width: '100%',
         }}>
-        <UserAvatar source={senderAvatar} />
-      </View>
-      <View style={{width: '100%'}}>
-        <View style={{flexDirection: 'row'}}>
-          <Text
+        <View
+          style={{
+            width: colors.avatarWidth,
+            height: colors.avatarHeight,
+            marginRight: colors.spacing.s,
+          }}>
+          <UserAvatar source={senderAvatar} />
+        </View>
+        <View style={{display: 'flex', flex: 1}}>
+          <View
             style={{
-              color: colors.textPrimary,
-              fontWeight: colors.fontBold,
-              fontSize: colors.fontMd,
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
               marginBottom: colors.spacing.xs,
             }}>
-            {senderName}
-          </Text>
+            <Text
+              style={{
+                color: colors.textPrimary,
+                fontWeight: colors.fontBold,
+                fontSize: colors.fontMd,
+              }}>
+              {senderName}
+            </Text>
+
+            <Text
+              style={{
+                color: colors.textSecondary,
+                fontWeight: colors.fontSemiBold,
+                fontSize: colors.fontSm,
+                marginLeft: 'auto',
+              }}>
+              2 hours ago
+            </Text>
+          </View>
 
           <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
             style={{
               color: colors.textSecondary,
               fontWeight: colors.fontSemiBold,
               fontSize: colors.fontSm,
-              flex: 1,
-              textAlign: 'right',
             }}>
-            2 hours ago
+            {message}
           </Text>
         </View>
+      </View>
+    </Pressable>
+  );
+}
 
-        <Text
-          style={{
-            color: colors.textSecondary,
-            fontWeight: colors.fontSemiBold,
-            fontSize: colors.fontSm,
-          }}>
-          {message}
-        </Text>
+function MessageUser() {
+  const username = 'reilly';
+  const navigation = useNavigation();
+  return (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        height: '100%',
+        flex: 1,
+        backgroundColor: colors.bg,
+      }}>
+      <View
+        style={{
+          display: 'flex',
+          height: colors.topbarHeight,
+          width: '100%',
+          marginBottom: colors.spacing.m,
+        }}>
+        <Branding
+          leftContainer={
+            <Pressable onPress={() => navigation.goBack()}>
+              <ArrowLeft
+                width={colors.iconWidth}
+                height={colors.iconHeight}
+                color={colors.textSecondary}
+              />
+            </Pressable>
+          }>
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontWeight: colors.fontBold,
+              fontSize: colors.fontXL,
+            }}>
+            {username}
+          </Text>
+        </Branding>
       </View>
     </View>
   );
