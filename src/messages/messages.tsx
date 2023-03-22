@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, TextInput} from 'react-native';
 import {colors} from '../theme';
 import UserAvatar from '../components/user-avatar';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -87,7 +87,6 @@ export default function MessageWrapper() {
 }
 
 function MessagePreview() {
-  console.log('WTF');
   const {messagePreview} = useMessagePreviews();
   return (
     <View
@@ -259,8 +258,13 @@ function MessagePreviewHighlight({
   );
 }
 
-function MessageUser(props: any) {
-  console.log(props);
+function MessageUser({
+  friendsAvatar = 'https://cdn.vox-cdn.com/thumbor/AzBgl9G-2lAt4AmbQnEq-jiKxus=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13415907/grinch1.jpg',
+  friendsName = 'No name ;)',
+}: {
+  friendsAvatar: string;
+  friendsName: string;
+}) {
   const username = 'reilly';
   const navigation = useNavigation();
   return (
@@ -280,6 +284,7 @@ function MessageUser(props: any) {
           height: colors.topbarHeight,
           width: '100%',
           marginBottom: colors.spacing.m,
+          marginTop: colors.spacing.m,
         }}>
         <Branding
           leftContainer={
@@ -291,16 +296,63 @@ function MessageUser(props: any) {
               />
             </Pressable>
           }>
-          <Text
+          <View
             style={{
-              color: colors.textPrimary,
-              fontWeight: colors.fontBold,
-              fontSize: colors.fontXL,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            {username}
-          </Text>
+            <View
+              style={{
+                height: colors.avatarHeight,
+                width: colors.avatarWidth,
+                marginRight: colors.spacing.s,
+              }}>
+              <UserAvatar source={friendsAvatar} />
+            </View>
+            <Text
+              style={{
+                color: colors.textPrimary,
+                fontWeight: colors.fontBold,
+                fontSize: colors.fontXL,
+              }}>
+              {friendsName}
+            </Text>
+          </View>
         </Branding>
+        <ChatContainer />
       </View>
+    </View>
+  );
+}
+
+function ChatContainer({chatMessages = [{id: 0, sender: 'reilly', message: 'Hello!'}]}) {
+
+
+  return (
+    <View>
+      {chatMessages?.map(message =>{
+          const {id,message,sender} = message
+
+       return (
+        <Message key={id} sender={sender} message={message}/>
+       )
+
+
+
+      } )}
+      <ChatInput />
+    </View>
+  );
+}
+
+function 
+
+function ChatInput() {
+  return (
+    <View>
+      <TextInput />
     </View>
   );
 }
