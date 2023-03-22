@@ -57,19 +57,19 @@ export const useMessagePreviews = () => {
 };
 
 // These types need to be updated
-type RootStackParamList = {
-  MessagePreview: {username: string};
-  MessageUser: {username: string};
-};
+// type RootStackParamList = {
+//   MessagePreview: {username: string};
+//   MessageUser: {username: string};
+// };
 
-type MessageUserProps = NativeStackScreenProps<
-  RootStackParamList,
-  'MessageUser'
->;
-type MessagePreviewProps = NativeStackScreenProps<
-  RootStackParamList,
-  'MessagePreview'
->;
+// type MessageUserProps = NativeStackScreenProps<
+//   RootStackParamList,
+//   'MessageUser'
+// >;
+// type MessagePreviewProps = NativeStackScreenProps<
+//   RootStackParamList,
+//   'MessagePreview'
+// >;
 
 export default function MessageWrapper() {
   return (
@@ -87,6 +87,7 @@ export default function MessageWrapper() {
 }
 
 function MessagePreview() {
+  console.log('WTF');
   const {messagePreview} = useMessagePreviews();
   return (
     <View
@@ -189,7 +190,13 @@ function MessagePreviewHighlight({
   const navigation = useNavigation();
 
   return (
-    <Pressable onPress={() => navigation.navigate('MessageUser')}>
+    <Pressable
+      onPress={() =>
+        navigation.navigate('MessageUser', {
+          user: senderName,
+          avatar: senderAvatar,
+        })
+      }>
       <View
         style={{
           display: 'flex',
@@ -252,7 +259,8 @@ function MessagePreviewHighlight({
   );
 }
 
-function MessageUser() {
+function MessageUser(props: any) {
+  console.log(props);
   const username = 'reilly';
   const navigation = useNavigation();
   return (
