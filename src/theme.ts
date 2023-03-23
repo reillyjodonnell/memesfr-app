@@ -51,8 +51,6 @@ export const colors = {
   },
 
   // borders
-  rounded: 10,
-  circular: 10000,
 
   // icons
   iconWidth: 30,
@@ -82,6 +80,13 @@ export const colors = {
   heightOfTopAndBottomBars: 100,
   interactionHeight: 340,
   interactionWidth: 80,
+
+  borderRadius: {
+    rounded: 20,
+    circle: 100,
+  },
+
+  textInputHeight: 50,
 
   avatar: {
     s: 40,

@@ -5,9 +5,11 @@ import UserAvatar from '../components/user-avatar';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import ArrowLeft from '../assets/arrow-left.svg';
+import Send from '../assets/send.svg';
 import {Branding} from '../branding';
 
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {color} from 'react-native-reanimated';
 
 const Stack = createStackNavigator();
 
@@ -265,7 +267,6 @@ function MessageUser({
   friendsAvatar: string;
   friendsName: string;
 }) {
-  const username = 'reilly';
   const navigation = useNavigation();
   return (
     <View
@@ -321,38 +322,107 @@ function MessageUser({
             </Text>
           </View>
         </Branding>
-        <ChatContainer />
       </View>
+      <ChatContainer />
     </View>
   );
 }
 
-function ChatContainer({chatMessages = [{id: 0, sender: 'reilly', message: 'Hello!'}]}) {
-
-
+function ChatContainer({
+  chatMessages = [{id: 0, sender: 'reilly', message: 'Hello!'}],
+}) {
   return (
-    <View>
-      {chatMessages?.map(message =>{
-          const {id,message,sender} = message
-
-       return (
-        <Message key={id} sender={sender} message={message}/>
-       )
-
-
-
-      } )}
+    <View
+      style={{
+        marginTop: colors.topbarHeight,
+        display: 'flex',
+        flex: 1,
+        height: '100%',
+        width: '100%',
+        justifyContent: 'flex-start',
+        overflow: 'scroll',
+      }}>
+      {chatMessages?.map(chat => {
+        const {id, message, sender} = chat;
+        return <Message key={id} sender={sender} message={message} />;
+      })}
       <ChatInput />
     </View>
   );
 }
 
-function 
+function Message({
+  sender,
+  senderAvatar = 'https://cdn.vox-cdn.com/thumbor/AzBgl9G-2lAt4AmbQnEq-jiKxus=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13415907/grinch1.jpg',
+  message,
+}: {
+  sender: string;
+  senderAvatar: string;
+  message: string;
+}) {
+  const isUserAuthor = sender === 'reilly';
+  return (
+    <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+      <View
+        style={{
+          width: colors.avatarWidth / 1.5,
+          height: colors.avatarHeight / 1.5,
+          marginRight: colors.spacing.s,
+        }}>
+        <UserAvatar source={senderAvatar} />
+      </View>
+
+      <View
+        style={{
+          backgroundColor: colors.line,
+          alignSelf: isUserAuthor ? 'flex-end' : 'flex-start',
+          padding: colors.spacing.m,
+          borderRadius: colors.borderRadius.rounded,
+        }}>
+        <Text style={{color: colors.textPrimary}}>{message}</Text>
+      </View>
+    </View>
+  );
+}
 
 function ChatInput() {
   return (
-    <View>
-      <TextInput />
+    <View
+      style={{
+        height: colors.textInputHeight,
+        borderWidth: 1,
+        backgroundColor: colors.line,
+        borderRadius: colors.borderRadius.rounded,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 'auto',
+      }}>
+      <TextInput
+        placeholder="Write a dank message..."
+        style={{
+          color: colors.textPrimary,
+          flex: 1,
+          padding: colors.spacing.s,
+          width: '100%',
+          height: '100%',
+          fontSize: colors.fontMd,
+          height: colors.textInputHeight,
+        }}
+      />
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: colors.spacing.s,
+          marginRight: colors.spacing.s,
+        }}>
+        <Send
+          width={colors.iconWidth}
+          height={colors.iconHeight}
+          stroke={colors.textPrimary}
+        />
+      </View>
     </View>
   );
 }
