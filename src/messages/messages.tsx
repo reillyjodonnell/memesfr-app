@@ -5,11 +5,12 @@ import UserAvatar from '../components/user-avatar';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import ArrowLeft from '../assets/arrow-left.svg';
-import Send from '../assets/send.svg';
 import {Branding} from '../branding';
-
+import MessagePlus from '../assets/message-plus.svg';
+import ArrowTopRight from '../assets/arrow-top-right.svg';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {color} from 'react-native-reanimated';
+import {SendButton} from '../components/send-button';
 
 const Stack = createStackNavigator();
 
@@ -88,8 +89,7 @@ export default function MessageWrapper() {
   );
 }
 
-function MessagePreview() {
-  const {messagePreview} = useMessagePreviews();
+function MessagePreviewOverlay({children}: {children: JSX.Element}) {
   return (
     <View
       style={{
@@ -114,68 +114,82 @@ function MessagePreview() {
           }}>
           Messages
         </Text>
-      </View>
-      <View>
-        {messagePreview.map(
-          ({
-            id,
-            isSenderActive,
-            message,
-            senderAvatar,
-            senderName,
-            timeSent,
-          }) => {
-            return (
-              <MessagePreviewHighlight
-                senderAvatar={senderAvatar}
-                senderName={senderName}
-                key={id}
-                message={message}
-              />
-            );
-          },
-        )}
-      </View>
-      {/* <Branding /> */}
-      {/* <Tab.Navigator
-        screenOptions={{
-          tabBarIndicatorStyle: {
-            backgroundColor: colors.accent,
-            maxWidth: 60,
-            height: 4,
-            left: 68,
-            display: 'flex',
+        <View
+          style={{
+            borderRadius: colors.borderRadius.circle,
+            backgroundColor: colors.line,
+            padding: colors.spacing.s,
+            marginLeft: 'auto',
             justifyContent: 'center',
             alignItems: 'center',
-          },
-          tabBarActiveTintColor: colors.textPrimary,
-          tabBarInactiveTintColor: colors.textSecondary,
-          tabBarItemStyle: {},
-
-          tabBarLabelStyle: {
-            fontSize: 14,
-            fontWeight: '700',
-          },
-          tabBarStyle: {
-            backgroundColor: 'transparent',
-            position: 'absolute',
-            display: 'flex',
-
-            top: 0,
-            left: 0,
-            right: 0,
-            elevation: 0,
-          },
-          tabBarContentContainerStyle: {},
-        }}
-        // tabBar={props => {
-        //   const combinedProps = {...props, navigation};
-        //   return <Branding {...combinedProps} />;
-        // }}
-      >
-        <Text>Oh yes!</Text>
-      </Tab.Navigator> */}
+          }}>
+          <MessagePlus
+            stroke={colors.textPrimary}
+            width={colors.iconWidth}
+            height={colors.iconHeight}
+          />
+        </View>
+      </View>
+      {children}
     </View>
+  );
+}
+
+function MessagePreview() {
+  const {messagePreview} = useMessagePreviews();
+  return (
+    <MessagePreviewOverlay>
+      <View>
+        {messagePreview?.length > 0 ? (
+          messagePreview?.map(
+            ({
+              id,
+              isSenderActive,
+              message,
+              senderAvatar,
+              senderName,
+              timeSent,
+            }) => {
+              return (
+                <MessagePreviewHighlight
+                  senderAvatar={senderAvatar}
+                  senderName={senderName}
+                  key={id}
+                  message={message}
+                />
+              );
+            },
+          )
+        ) : (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'row',
+              padding: colors.spacing.l,
+            }}>
+            <View
+              style={{
+                paddingHorizontal: colors.spacing.m,
+              }}>
+              <Text
+                style={{
+                  fontSize: colors.fontXL,
+                  fontWeight: colors.fontBold,
+                  color: colors.textPrimary,
+                }}>
+                Create your first message!
+              </Text>
+            </View>
+            <ArrowTopRight
+              width={colors.iconWidth}
+              height={colors.iconHeight}
+              stroke={colors.textPrimary}
+            />
+          </View>
+        )}
+      </View>
+    </MessagePreviewOverlay>
   );
 }
 
@@ -375,10 +389,10 @@ function Message({
 
       <View
         style={{
-          backgroundColor: colors.line,
+          backgroundColor: colors.messagesBg,
           alignSelf: isUserAuthor ? 'flex-end' : 'flex-start',
-          padding: colors.spacing.m,
-          borderRadius: colors.borderRadius.rounded,
+          padding: colors.spacing.s,
+          borderRadius: colors.borderRadius.rounded - 6,
         }}>
         <Text style={{color: colors.textPrimary}}>{message}</Text>
       </View>
@@ -404,26 +418,14 @@ function ChatInput() {
         style={{
           color: colors.textPrimary,
           flex: 1,
-          padding: colors.spacing.s,
+          padding: colors.spacing.m,
           width: '100%',
           height: '100%',
           fontSize: colors.fontMd,
           height: colors.textInputHeight,
         }}
       />
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: colors.spacing.s,
-          marginRight: colors.spacing.s,
-        }}>
-        <Send
-          width={colors.iconWidth}
-          height={colors.iconHeight}
-          stroke={colors.textPrimary}
-        />
-      </View>
+      <SendButton onPress={() => {}} />
     </View>
   );
 }

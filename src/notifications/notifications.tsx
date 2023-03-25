@@ -202,8 +202,8 @@ function NotificationCard({
         }}>
         <View
           style={{
-            height: colors.avatar.m,
-            width: colors.avatar.m,
+            height: colors.avatarHeight,
+            width: colors.avatarWidth,
           }}>
           <UserAvatar />
         </View>

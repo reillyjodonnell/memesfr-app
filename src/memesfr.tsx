@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {colors} from './theme';
 import HomeIcon from './assets/home.svg';
 import Notifications from './assets/notifications.svg';
-import Post from './assets/plus.svg';
+import Plus from './assets/plus.svg';
 import Message from './assets/message.svg';
 import User from './assets/user.svg';
 import HomeScreen from './home/home';
@@ -127,7 +127,7 @@ function Memesfr() {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Post
+                    <Plus
                       style={{
                         width: 50,
                         height: 30,

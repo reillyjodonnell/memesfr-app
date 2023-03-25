@@ -13,6 +13,7 @@ import {colors} from '../theme';
 import ChatBubble from '../assets/chat-bubble.svg';
 import Animated from 'react-native-reanimated';
 import UserAvatar from './user-avatar';
+import {SendButton} from './send-button';
 
 export default function CreateComment({
   uploadComment,
@@ -52,31 +53,32 @@ export default function CreateComment({
           style={{
             flex: 1,
             color: colors.textPrimary,
-            fontSize: colors.fontSm,
+            fontSize: colors.fontMd,
             height: 30,
           }}
         />
+
         {comment.length ? (
-          <Pressable
-            onPress={() => callWithHapticFeedback(uploadComment)}
-            style={{
-              marginHorizontal: colors.spacing.m,
-              height: colors.iconHeight,
-              width: colors.iconWidth,
-              borderRadius: colors.circular,
-              padding: colors.spacing.s,
-              backgroundColor: colors.accent,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ChatBubble
-              stroke={'white'}
-              height={colors.iconHeight / 2}
-              width={colors.iconWidth / 2}
-              style={{}}
-            />
-          </Pressable>
-        ) : null}
+          <SendButton onPress={() => callWithHapticFeedback(uploadComment)} />
+        ) : // <Pressable
+        //   onPress={() => callWithHapticFeedback(uploadComment)}
+        //   style={{
+        //     marginHorizontal: colors.spacing.m,
+        //     height: colors.iconHeight,
+        //     width: colors.iconWidth,
+        //     borderRadius: colors.borderRadius.circle,
+        //     padding: colors.spacing.m,
+        //     backgroundColor: colors.accent,
+        //     justifyContent: 'center',
+        //     alignItems: 'center',
+        //   }}>
+        //   <ChatBubble
+        //     stroke={'white'}
+        //     height={colors.iconHeight / 1.25}
+        //     width={colors.iconWidth / 1.25}
+        //   />
+        // </Pressable>
+        null}
       </View>
     </KeyboardAvoidingView>
   );

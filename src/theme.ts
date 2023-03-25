@@ -36,7 +36,11 @@ export const colors = {
   hover: '#393c469f',
   transparent: '#ffffff00',
   semiTransparent: '#ffffff12',
-
+  messagesBg: '#404046',
+  green: '#5eeb5b',
+  red: '#ff1b1c',
+  orange: '#ff7f11',
+  blue: '#20a4f3',
   border: {
     thin: 1,
     regular: 2,
@@ -46,8 +50,9 @@ export const colors = {
   spacing: {
     xs: 4,
     s: 8,
-    m: 16,
-    l: 24,
+    m: 12,
+    l: 16,
+    x: 24,
     xl: 40,
   },
 

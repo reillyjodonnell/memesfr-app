@@ -406,11 +406,13 @@ function ShareModal({
                 alignItems: 'center',
               }}>
               <ShareModalItem
+                backgroundColor={colors.green}
                 icon={<ChatBubble color={colors.textPrimary} />}
                 header={'Text'}
                 text="Text this dank meme to a friend!"
               />
               <ShareModalItem
+                backgroundColor={colors.blue}
                 icon={<Copy color={colors.textPrimary} />}
                 header={'Copy'}
                 text="Copy this dank meme!"
@@ -432,10 +434,12 @@ function ShareModalItem({
   icon,
   header,
   text,
+  backgroundColor = colors.accent,
 }: {
   icon: any;
   header: string;
   text: string;
+  backgroundColor?: string;
 }) {
   return (
     <View
@@ -452,13 +456,13 @@ function ShareModalItem({
           style={{
             height: colors.iconHeight,
             width: colors.iconWidth,
-            borderColor: colors.accent,
+            borderColor: backgroundColor,
             borderWidth: 2,
             borderRadius: 10000,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: colors.accent,
+            backgroundColor: backgroundColor,
             padding: 18,
             marginHorizontal: colors.spacing.m,
           }}>
