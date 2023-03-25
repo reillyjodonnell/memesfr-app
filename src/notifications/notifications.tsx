@@ -184,11 +184,17 @@ function NotificationCard({
         width: '100%',
         marginVertical: colors.spacing.s,
       }}>
-      <View style={{display: 'flex', paddingHorizontal: colors.spacing.m}}>
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignContent: 'center',
+          paddingRight: colors.spacing.s,
+        }}>
         <View
           style={{
-            height: colors.avatar.l,
-            width: colors.avatar.l,
+            height: colors.avatar.m,
+            width: colors.avatar.m,
           }}>
           <UserAvatar />
         </View>

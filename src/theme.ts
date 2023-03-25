@@ -92,6 +92,7 @@ export const colors = {
     s: 40,
     m: 50,
     l: 60,
+    xl: 80,
   },
 
   avatarWidth: 50,

@@ -289,7 +289,7 @@ function MessageUser({
         }}>
         <Branding
           leftContainer={
-            <Pressable onPress={() => navigation.goBack()}>
+            <Pressable style={{zIndex: 1}} onPress={() => navigation.goBack()}>
               <ArrowLeft
                 width={colors.iconWidth}
                 height={colors.iconHeight}
@@ -303,6 +303,7 @@ function MessageUser({
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
+              zIndex: 0,
             }}>
             <View
               style={{

@@ -29,6 +29,7 @@ export const Branding = ({
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
+          zIndex: -1,
         }}>
         {children}
       </View>
