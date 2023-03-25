@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {colors} from './theme';
 import HomeIcon from './assets/home.svg';
 import Notifications from './assets/notifications.svg';
-import Post from './assets/post.svg';
+import Post from './assets/plus.svg';
 import Message from './assets/message.svg';
 import User from './assets/user.svg';
 import HomeScreen from './home/home';
@@ -108,23 +108,21 @@ function Memesfr() {
                 <View
                   style={{
                     borderRadius: 15,
-                    padding: 2,
+                    borderColor: colors.accent,
+                    borderWidth: 2,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     shadowColor: colors.accent,
-                    backgroundColor: colors.accent,
                     shadowOpacity: 0.92,
                     shadowRadius: 5,
                     elevation: 10,
+                    backgroundColor: colors.accentHighlight,
                   }}>
                   <View
                     style={{
                       position: 'relative',
-                      backgroundColor: 'white',
-                      borderRadius: 15,
-                      paddingTop: 5,
-                      paddingBottom: 5,
+                      paddingVertical: colors.spacing.xs,
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -134,7 +132,7 @@ function Memesfr() {
                         width: 50,
                         height: 30,
                       }}
-                      stroke={colors.bg}
+                      stroke={colors.textPrimary}
                     />
                   </View>
                 </View>

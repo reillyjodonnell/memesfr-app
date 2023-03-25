@@ -84,6 +84,7 @@ export function Notifications() {
         alignItems: 'center',
         flex: 1,
         backgroundColor: colors.bg,
+        width: '100%',
       }}>
       <View
         style={{
@@ -132,6 +133,7 @@ export function Notifications() {
                 avatar={avatar}
                 username={username}
                 image={image}
+                isViewed={false}
               />
               <NotificationCard
                 timeOrDate="6:04 PM"
@@ -170,26 +172,33 @@ function NotificationCard({
   username,
   image = 'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/memes%2FNeil%20is%20making%20moves%20?alt=media&token=18e52de5-55de-4b70-8bf4-a93bf03b4eb7',
   timeOrDate = 'Now',
+  isViewed = true,
 }: {
   avatar?: string | null;
   username: string;
   image: string;
   timeOrDate: string;
+  isViewed?: boolean;
 }) {
   return (
     <View
       style={{
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
         width: '100%',
-        marginVertical: colors.spacing.s,
+        paddingVertical: colors.spacing.s,
+        backgroundColor: colors.bg,
+        borderColor: colors.line,
+        borderBottomWidth: colors.border.regular,
       }}>
       <View
         style={{
           display: 'flex',
           justifyContent: 'flex-start',
-          alignContent: 'center',
-          paddingRight: colors.spacing.s,
+          alignItems: 'center',
+          paddingHorizontal: colors.spacing.s,
         }}>
         <View
           style={{
@@ -200,7 +209,11 @@ function NotificationCard({
         </View>
       </View>
 
-      <View style={{display: 'flex', justifyContent: 'center'}}>
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
         <Text
           style={{
             color: colors.textPrimary,
@@ -217,7 +230,7 @@ function NotificationCard({
       <View
         style={{
           marginLeft: 'auto',
-          paddingHorizontal: colors.spacing.m,
+          paddingHorizontal: colors.spacing.s,
           display: 'flex',
         }}>
         <Image

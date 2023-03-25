@@ -30,6 +30,7 @@ export const colors = {
   accentBg: palette.purple,
   accent: palette.purple,
   accentHighlight: palette.purpleHighlight,
+  accentLight: palette.purpleLightHighlight,
   navActive: '#fbfbfba6' as Color,
   line: '#ffffff14',
   hover: '#393c469f',
@@ -97,4 +98,9 @@ export const colors = {
 
   avatarWidth: 50,
   avatarHeight: 50,
+
+  onlineStatusColor: '#19f23d',
+  offlineStatusColor: 'red',
+
+  onlineStatusSize: 24,
 };
