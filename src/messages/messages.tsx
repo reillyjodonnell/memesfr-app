@@ -3,16 +3,19 @@ import {View, Text, Pressable, TextInput} from 'react-native';
 import {colors} from '../theme';
 import UserAvatar from '../components/user-avatar';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import ArrowLeft from '../assets/arrow-left.svg';
 import {Branding} from '../branding';
 import MessagePlus from '../assets/message-plus.svg';
 import ArrowTopRight from '../assets/arrow-top-right.svg';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {color} from 'react-native-reanimated';
 import {SendButton} from '../components/send-button';
+import {ActiveIndexProvider, useActiveIndex} from './active-index-provider';
+import {getTimeSinceEventFormatted} from '../utils';
+import {useUser} from '../context/user-provider';
 
 const Stack = createStackNavigator();
+
+const user = 'OhReally';
 
 export const useMessagePreviews = () => {
   const yesterday = new Date();
@@ -26,66 +29,107 @@ export const useMessagePreviews = () => {
   yesterday.setMinutes(0);
   yesterday.setMilliseconds(0);
 
+  // retrieve 10 recent messages user recieved from unique users from the database
+
   const [messagePreview, setMessagePreview] = useState([
     {
       id: 0,
-      message: 'Hello there!',
-      senderName: 'OhReally',
-      senderAvatar:
-        'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/users%2F39Wv4ueUKPX4vx7gPM4Pjy238pH3?alt=media&token=c20ccc81-941d-43ba-81d8-7ea19ec66a58',
-      isSenderActive: true,
-      date: today,
-    },
-    {
-      id: 1,
-      message: 'Are you doing okay? there!',
       senderName: 'Rach',
       senderAvatar:
         'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/users%2FnXFuyvfojfNlpUrpQhpFHoAo9zV2?alt=media&token=ca4e01a9-c626-4794-8243-fada79fba707',
-      isSenderActive: false,
-      date: yesterday,
+      isSenderActive: true,
+      date: today.toISOString(),
+      messages: [
+        {
+          id: 0,
+          message: 'Hello there!',
+          senderName: 'OhReally',
+          date: today.toISOString(),
+        },
+        {
+          id: 1,
+          message: 'Whats up!',
+          senderName: 'Rach',
+          date: today.toISOString(),
+        },
+        {
+          id: 2,
+          message: 'Not much u?',
+          senderName: 'OhReally',
+          date: today.toISOString(),
+        },
+        {
+          id: 3,
+          message: 'Same!',
+          senderName: 'Rach',
+          date: today.toISOString(),
+        },
+      ],
     },
     {
-      id: 2,
-      message:
-        'Here is another message. Hwoever, its a bit longer! We are testing the maximum number of characters that this can handle!',
-      senderName: 'Rach2',
+      id: 1,
+      senderName: 'Greg',
       senderAvatar:
-        'https://firebasestorage.googleapis.com/v0/b/memes-30d06.appspot.com/o/users%2FnXFuyvfojfNlpUrpQhpFHoAo9zV2?alt=media&token=ca4e01a9-c626-4794-8243-fada79fba707',
+        'https://pbs.twimg.com/profile_images/1581014308397502464/NPogKMyk_400x400.jpg',
       isSenderActive: true,
-      date: yesterday,
+      date: today.toISOString(),
+      messages: [
+        {
+          id: 0,
+          message: 'Hey Greg!',
+          senderName: 'OhReally',
+          date: today.toISOString(),
+        },
+        {
+          id: 1,
+          message: 'Whats up OhReally!',
+          senderName: 'Greg',
+          date: today.toISOString(),
+        },
+        {
+          id: 2,
+          message: 'Making some dank memes!',
+          senderName: 'OhReally',
+          date: today.toISOString(),
+        },
+        {
+          id: 3,
+          message: 'Send me some!!',
+          senderName: 'Greg',
+          date: today.toISOString(),
+        },
+        {
+          id: 4,
+          message: 'Nah!',
+          senderName: 'OhReally',
+          date: today.toISOString(),
+        },
+      ],
     },
   ]);
   return {messagePreview};
 };
 
-// These types need to be updated
-// type RootStackParamList = {
-//   MessagePreview: {username: string};
-//   MessageUser: {username: string};
-// };
-
-// type MessageUserProps = NativeStackScreenProps<
-//   RootStackParamList,
-//   'MessageUser'
-// >;
-// type MessagePreviewProps = NativeStackScreenProps<
-//   RootStackParamList,
-//   'MessagePreview'
-// >;
-
 export default function MessageWrapper() {
+  const {messagePreview} = useMessagePreviews();
+
   return (
-    <Stack.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName="MessagePreview">
-      <Stack.Screen name="MessagePreview" component={MessagePreview} />
-      <Stack.Screen
-        name="MessageUser"
-        initialParams={{user: 'reilly'}}
-        component={MessageUser}
-      />
-    </Stack.Navigator>
+    <ActiveIndexProvider>
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName="MessagePreview">
+        <Stack.Screen
+          name="MessagePreview"
+          initialParams={{messageData: messagePreview}}
+          component={MessagePreview}
+        />
+        <Stack.Screen
+          name="MessageUser"
+          initialParams={{messageData: messagePreview}}
+          component={MessageUser}
+        />
+      </Stack.Navigator>
+    </ActiveIndexProvider>
   );
 }
 
@@ -96,6 +140,7 @@ function MessagePreviewOverlay({children}: {children: JSX.Element}) {
         flex: 1,
         display: 'flex',
         backgroundColor: colors.bg,
+        paddingHorizontal: colors.spacing.s,
       }}>
       <View
         style={{
@@ -135,25 +180,37 @@ function MessagePreviewOverlay({children}: {children: JSX.Element}) {
   );
 }
 
-function MessagePreview() {
-  const {messagePreview} = useMessagePreviews();
+function MessagePreview({route}: MessagePreviewProps) {
+  const {activeIndex, setActiveIndex} = useActiveIndex();
+  const {messageData} = route.params;
+
+  function onPress(id = -1) {
+    setActiveIndex(id);
+  }
+
   return (
     <MessagePreviewOverlay>
       <View>
-        {messagePreview?.length > 0 ? (
-          messagePreview?.map(
+        {messageData?.length > 0 ? (
+          messageData?.map(
             ({
               id,
               isSenderActive,
-              message,
+              messages,
               senderAvatar,
-              senderName,
-              timeSent,
+              senderName: name,
+              date,
             }) => {
+              const formattedDate = new Date(date);
+              const messageDate = getTimeSinceEventFormatted(formattedDate);
+              const message = messages[messages.length - 1].message;
+              const senderName = messages[messages.length - 1].senderName;
               return (
                 <MessagePreviewHighlight
+                  onPress={() => onPress(id)}
                   senderAvatar={senderAvatar}
                   senderName={senderName}
+                  messageDate={messageDate}
                   key={id}
                   message={message}
                 />
@@ -193,94 +250,13 @@ function MessagePreview() {
   );
 }
 
-function MessagePreviewHighlight({
-  message,
-  senderName,
-  senderAvatar,
-}: {
-  message: string;
-  senderName: string;
-  senderAvatar: string;
-}) {
-  const navigation = useNavigation();
+function MessageUser({route}: MessageUserProps) {
+  const {activeIndex} = useActiveIndex();
 
-  return (
-    <Pressable
-      onPress={() =>
-        navigation.navigate('MessageUser', {
-          user: senderName,
-          avatar: senderAvatar,
-        })
-      }>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          marginVertical: colors.spacing.m,
-          width: '100%',
-        }}>
-        <View
-          style={{
-            width: colors.avatarWidth,
-            height: colors.avatarHeight,
-            marginRight: colors.spacing.s,
-          }}>
-          <UserAvatar source={senderAvatar} />
-        </View>
-        <View style={{display: 'flex', flex: 1}}>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              marginBottom: colors.spacing.xs,
-            }}>
-            <Text
-              style={{
-                color: colors.textPrimary,
-                fontWeight: colors.fontBold,
-                fontSize: colors.fontMd,
-              }}>
-              {senderName}
-            </Text>
-
-            <Text
-              style={{
-                color: colors.textSecondary,
-                fontWeight: colors.fontSemiBold,
-                fontSize: colors.fontSm,
-                marginLeft: 'auto',
-              }}>
-              2 hours ago
-            </Text>
-          </View>
-
-          <Text
-            ellipsizeMode="tail"
-            numberOfLines={1}
-            style={{
-              color: colors.textSecondary,
-              fontWeight: colors.fontSemiBold,
-              fontSize: colors.fontSm,
-            }}>
-            {message}
-          </Text>
-        </View>
-      </View>
-    </Pressable>
-  );
-}
-
-function MessageUser({
-  friendsAvatar = 'https://cdn.vox-cdn.com/thumbor/AzBgl9G-2lAt4AmbQnEq-jiKxus=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13415907/grinch1.jpg',
-  friendsName = 'No name ;)',
-}: {
-  friendsAvatar: string;
-  friendsName: string;
-}) {
+  const params = route?.params;
+  const userName = params?.messageData[activeIndex].senderName;
+  const userAvatar = params?.messageData[activeIndex].senderAvatar;
+  const messages = params?.messageData[activeIndex];
   const navigation = useNavigation();
   return (
     <View
@@ -325,7 +301,7 @@ function MessageUser({
                 width: colors.avatarWidth,
                 marginRight: colors.spacing.s,
               }}>
-              <UserAvatar source={friendsAvatar} />
+              <UserAvatar source={userAvatar} />
             </View>
             <Text
               style={{
@@ -333,19 +309,18 @@ function MessageUser({
                 fontWeight: colors.fontBold,
                 fontSize: colors.fontXL,
               }}>
-              {friendsName}
+              {userName}
             </Text>
           </View>
         </Branding>
       </View>
-      <ChatContainer />
+      <ChatContainer chatMessages={messages} />
     </View>
   );
 }
 
-function ChatContainer({
-  chatMessages = [{id: 0, sender: 'reilly', message: 'Hello!'}],
-}) {
+function ChatContainer({chatMessages}: {chatMessages: MessagePreviewData}) {
+  const {avatar, username} = useUser();
   return (
     <View
       style={{
@@ -357,44 +332,156 @@ function ChatContainer({
         justifyContent: 'flex-start',
         overflow: 'scroll',
       }}>
-      {chatMessages?.map(chat => {
-        const {id, message, sender} = chat;
-        return <Message key={id} sender={sender} message={message} />;
+      {chatMessages?.messages.map(chat => {
+        const {date, id, message, senderName} = chat;
+        const isUserSender = senderName === username;
+        const senderAvatar = chatMessages.senderAvatar;
+        const userAvatar = avatar;
+        return (
+          <Message
+            key={id}
+            senderAvatar={senderAvatar}
+            isUserSender={isUserSender}
+            userAvatar={userAvatar}
+            message={message}
+          />
+        );
       })}
       <ChatInput />
     </View>
   );
 }
 
-function Message({
-  sender,
-  senderAvatar = 'https://cdn.vox-cdn.com/thumbor/AzBgl9G-2lAt4AmbQnEq-jiKxus=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13415907/grinch1.jpg',
+function MessagePreviewHighlight({
   message,
+  senderName,
+  messageDate,
+  senderAvatar,
+  onPress,
 }: {
-  sender: string;
+  message: string;
+  senderName: string;
+  senderAvatar: string;
+  messageDate: string;
+  onPress: () => void;
+}) {
+  const {username} = useUser();
+  const navigation = useNavigation();
+  console.log('WHAT');
+  console.log(senderName);
+  const isUserAuthor = senderName === username;
+
+  return (
+    <Pressable
+      onPress={() => {
+        onPress();
+        navigation.navigate('MessageUser', {
+          user: senderName,
+          avatar: senderAvatar,
+        });
+      }}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          marginVertical: colors.spacing.m,
+          width: '100%',
+        }}>
+        <View
+          style={{
+            width: colors.avatar.l,
+            height: colors.avatar.l,
+            marginRight: colors.spacing.s,
+          }}>
+          <UserAvatar source={senderAvatar} />
+        </View>
+        <View style={{display: 'flex', flex: 1}}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+            }}>
+            <View>
+              <Text
+                style={{
+                  color: colors.textPrimary,
+                  fontWeight: colors.fontBold,
+                  fontSize: colors.fontMd,
+                  paddingBottom: colors.spacing.xs,
+                }}>
+                {senderName}
+              </Text>
+              <Text
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                style={{
+                  color: colors.textSecondary,
+                  fontWeight: colors.fontSemiBold,
+                  fontSize: colors.fontSm,
+                }}>
+                {isUserAuthor ? `you: ${message}` : message}
+              </Text>
+            </View>
+
+            <Text
+              style={{
+                color: colors.textSecondary,
+                fontWeight: colors.fontSemiBold,
+                fontSize: colors.fontSm,
+                marginLeft: 'auto',
+              }}>
+              {messageDate}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function Message({
+  senderAvatar = 'https://cdn.vox-cdn.com/thumbor/AzBgl9G-2lAt4AmbQnEq-jiKxus=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13415907/grinch1.jpg',
+  userAvatar = '',
+  message,
+  isUserSender = true,
+}: {
   senderAvatar: string;
   message: string;
+  isUserSender: boolean;
+  userAvatar: string;
 }) {
-  const isUserAuthor = sender === 'reilly';
   return (
-    <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+    <View
+      style={{
+        flexDirection: isUserSender ? 'row-reverse' : 'row',
+        justifyContent: 'flex-start',
+        marginVertical: colors.spacing.m,
+      }}>
       <View
         style={{
           width: colors.avatarWidth / 1.5,
           height: colors.avatarHeight / 1.5,
-          marginRight: colors.spacing.s,
+          marginRight: isUserSender ? 0 : colors.spacing.s,
+          marginLeft: isUserSender ? colors.spacing.s : 0,
         }}>
-        <UserAvatar source={senderAvatar} />
+        <UserAvatar source={isUserSender ? userAvatar : senderAvatar} />
       </View>
 
       <View
         style={{
-          backgroundColor: colors.messagesBg,
-          alignSelf: isUserAuthor ? 'flex-end' : 'flex-start',
-          padding: colors.spacing.s,
-          borderRadius: colors.borderRadius.rounded - 6,
+          backgroundColor: isUserSender ? colors.blue : colors.messagesBg,
+          alignSelf: isUserSender ? 'flex-end' : 'flex-start',
+          paddingHorizontal: colors.spacing.m,
+          paddingVertical: colors.spacing.s + 2,
+          borderRadius: colors.borderRadius.rounded - 4,
         }}>
-        <Text style={{color: colors.textPrimary}}>{message}</Text>
+        <Text style={{color: colors.textPrimary, fontSize: colors.fontMd}}>
+          {message}
+        </Text>
       </View>
     </View>
   );
@@ -429,3 +516,40 @@ function ChatInput() {
     </View>
   );
 }
+
+interface messages {
+  id: number;
+  message: string;
+  senderName: string;
+  date: string;
+}
+
+// This needs use the types from useMessagePreviews
+interface MessagePreviewData {
+  id: number;
+  messages: messages[];
+  senderName: string;
+  senderAvatar: string;
+  isSenderActive: boolean;
+  date: Date;
+}
+
+type MessagePreviewRouteProp = {
+  MessagePreview: {
+    messageData: MessagePreviewData[];
+  };
+};
+
+type MessageUserRouteProp = {
+  MessageUser: {
+    messageData: MessagePreviewData[];
+  };
+};
+
+type MessageUserProps = {
+  route: RouteProp<MessageUserRouteProp, 'MessageUser'>;
+};
+
+type MessagePreviewProps = {
+  route: RouteProp<MessagePreviewRouteProp, 'MessagePreview'>;
+};

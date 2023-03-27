@@ -70,12 +70,7 @@ export default function HomeComponent({navigation}: any) {
             elevation: 0,
           },
           tabBarContentContainerStyle: {},
-        }}
-        // tabBar={props => {
-        //   const combinedProps = {...props, navigation};
-        //   return <Branding {...combinedProps} />;
-        // }}
-      >
+        }}>
         <Tab.Screen name="Popular" component={Popular} />
         <Tab.Screen name="Recent" component={Recent} />
       </Tab.Navigator>

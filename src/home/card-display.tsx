@@ -13,17 +13,13 @@ export default function CardDisplay({posts}: PopularProps) {
   const [activeIndex, setActiveIndex] = useState(-1);
   const {_, height} = useWindowDimensions();
 
-  const fetchMore = () => {
-    console.log('fetching more');
-  };
+  const fetchMore = () => {};
 
   if (!posts || posts.length === 0) {
     return null;
   }
 
-  const changed = (data: any) => {
-    console.log(data);
-  };
+  const changed = (data: any) => {};
 
   return (
     <Suspense

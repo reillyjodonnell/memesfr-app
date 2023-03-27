@@ -10,10 +10,6 @@ export default function usePhotos() {
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   useEffect(() => {
-    console.log('Photo changed', photo);
-  }, [photo]);
-
-  useEffect(() => {
     if (status?.granted || status?.canAskAgain) {
       setPromptUserToAllowAccessToPhotos(false);
       setPromptUserToAllowAccessToCamera(false);
@@ -64,7 +60,6 @@ export default function usePhotos() {
     }
   };
   function clearPhoto() {
-    console.log('Clearing photo');
     setPhoto('');
   }
 

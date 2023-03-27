@@ -61,6 +61,7 @@ export default function Comments() {
           height: '100%',
           justifyContent: 'center',
           alignItems: 'center',
+          margin: colors.spacing.xs,
         }}>
         <View
           style={{
@@ -149,7 +150,7 @@ function UserComment({
           style={{
             color: colors.textPrimary,
             fontWeight: colors.fontBold,
-            fontSize: colors.fontSm,
+            fontSize: colors.fontMd,
           }}>
           {username}
         </Text>
